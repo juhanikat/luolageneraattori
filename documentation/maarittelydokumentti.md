@@ -16,3 +16,4 @@ Lähteet ja inspiraatio:
 - https://en.wikipedia.org/wiki/Bowyer%E2%80%93Watson_algorithm
 - https://en.wikipedia.org/wiki/Delaunay_triangulation
 - https://vazgriz.com/119/procedurally-generated-dungeons/
+- https://www.gorillasun.de/blog/bowyer-watson-algorithm-for-delaunay-triangulation/
