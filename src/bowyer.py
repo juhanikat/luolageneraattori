@@ -1,6 +1,7 @@
 import math
 from matplotlib import pyplot
 import random
+import itertools
 
 
 class Vertex:
@@ -97,34 +98,47 @@ def add_vertex_and_update(vertex: Vertex, triangles: list) -> list:
     for edge in edges:
         valid_triangles.append(Triangle(edge.v0, edge.v1, vertex))
 
-    print(len(valid_triangles))
     return valid_triangles
 
 
 def main(vertices: list):
+
+    # create a supertriangle that is big enough to include all vertices inside its circumcircle
     st = Triangle(Vertex(-2000000, -2000000),
                   Vertex(0, 2000000), Vertex(2000000, -2000000))
 
+    # the list that will contain all our triangles
     triangles = [st]
 
+    # adds vertices one at a time, and removes and adds triangles as needed
     for vertex in vertices:
         triangles = add_vertex_and_update(vertex, triangles)
-    print(len(triangles))
-    triangles = [triangle for triangle in triangles if not (
+
+    # remove supertriangle and all triangles sharing its vertices for the final result
+    final_triangles = [triangle for triangle in triangles if not (
         triangle.v0 == st.v0 or triangle.v0 == st.v1 or triangle.v0 == st.v2 or
         triangle.v1 == st.v0 or triangle.v1 == st.v1 or triangle.v1 == st.v2 or
         triangle.v2 == st.v0 or triangle.v2 == st.v1 or triangle.v2 == st.v2
     )]
-    print(len(triangles))
+
+    # shows all triangles (including invalid ones) on top, and the output of the algorithm on the bottom
+    _, axes = pyplot.subplots(2)
+    axes[0].set_xlabel("Before removing supertriangle and adjacent triangles")
+    axes[1].set_xlabel("After removing supertriangle and adjacent triangles")
     pyplot.ion()
-    for triangle in triangles:
-        pyplot.plot([triangle.v0.x, triangle.v1.x, triangle.v2.x, triangle.v0.x],
-                    [triangle.v0.y, triangle.v1.y, triangle.v2.y, triangle.v0.y])
-        pyplot.pause(0.5)
-    # pyplot.plot([st.v0.x, st.v1.x, st.v2.x, st.v0.x],
-        # [st.v0.y, st.v1.y, st.v2.y, st.v0.y])
-    # pyplot.xticks(range(-1000000, 1000000, 100000))
-    pyplot.pause(0.5)
+    for i in range(len(triangles)):
+        old_triangle = triangles[i]
+        if i < len(final_triangles):
+            valid_triangle = final_triangles[i]
+        else:
+            valid_triangle = None
+        axes[0].plot([old_triangle.v0.x, old_triangle.v1.x, old_triangle.v2.x, old_triangle.v0.x],
+                     [old_triangle.v0.y, old_triangle.v1.y, old_triangle.v2.y, old_triangle.v0.y])
+        if valid_triangle is not None:
+            axes[1].plot([valid_triangle.v0.x, valid_triangle.v1.x, valid_triangle.v2.x, valid_triangle.v0.x],
+                         [valid_triangle.v0.y, valid_triangle.v1.y, valid_triangle.v2.y, valid_triangle.v0.y])
+
+        pyplot.pause(0.2)
     pyplot.ioff()
     pyplot.show()
 
@@ -132,7 +146,7 @@ def main(vertices: list):
 if __name__ == "__main__":
     vertices = []
     for i in range(20):
-        vertex = Vertex(random.randint(-7000000, 7000000),
-                        random.randint(-7000000, 7000000))
+        vertex = Vertex(random.randint(-700000, 700000),
+                        random.randint(-700000, 700000))
         vertices.append(vertex)
     main(vertices)
