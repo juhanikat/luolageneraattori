@@ -1,7 +1,4 @@
 import math
-from matplotlib import pyplot
-import random
-import itertools
 
 
 class Vertex:
@@ -101,11 +98,25 @@ def add_vertex_and_update(vertex: Vertex, triangles: list) -> list:
     return valid_triangles
 
 
-def main(vertices: list):
+def bowyer_watson(x_y_coords: list) -> list:
+    """An implementation of the Bowyer-Watson algorithm.
+    Implemented with the help this tutorial: 
+    https://www.gorillasun.de/blog/bowyer-watson-algorithm-for-delaunay-triangulation/#an-intuitive-explanation-of-the-algorithm
+
+    Args:
+        vertices (list): List of vertices (points) that are added to the triangulation.
+
+    Returns:
+        list: List of triangles that are in the valid Delaunay triangulation.
+    """
+
+    vertices = []
+    for coord in x_y_coords:
+        vertices.append(Vertex(coord[0], coord[1]))
 
     # create a supertriangle that is big enough to include all vertices inside its circumcircle
-    st = Triangle(Vertex(-2000000, -2000000),
-                  Vertex(0, 2000000), Vertex(2000000, -2000000))
+    st = Triangle(Vertex(-2500000, -2500000),
+                  Vertex(0, 2500000), Vertex(2500000, -2500000))
 
     # the list that will contain all our triangles
     triangles = [st]
@@ -115,38 +126,10 @@ def main(vertices: list):
         triangles = add_vertex_and_update(vertex, triangles)
 
     # remove supertriangle and all triangles sharing its vertices for the final result
-    final_triangles = [triangle for triangle in triangles if not (
+    valid_triangles = [triangle for triangle in triangles if not (
         triangle.v0 == st.v0 or triangle.v0 == st.v1 or triangle.v0 == st.v2 or
         triangle.v1 == st.v0 or triangle.v1 == st.v1 or triangle.v1 == st.v2 or
         triangle.v2 == st.v0 or triangle.v2 == st.v1 or triangle.v2 == st.v2
     )]
 
-    # shows all triangles (including invalid ones) on top, and the output of the algorithm on the bottom
-    _, axes = pyplot.subplots(2)
-    axes[0].set_xlabel("Before removing supertriangle and adjacent triangles")
-    axes[1].set_xlabel("After removing supertriangle and adjacent triangles")
-    pyplot.ion()
-    for i in range(len(triangles)):
-        old_triangle = triangles[i]
-        if i < len(final_triangles):
-            valid_triangle = final_triangles[i]
-        else:
-            valid_triangle = None
-        axes[0].plot([old_triangle.v0.x, old_triangle.v1.x, old_triangle.v2.x, old_triangle.v0.x],
-                     [old_triangle.v0.y, old_triangle.v1.y, old_triangle.v2.y, old_triangle.v0.y])
-        if valid_triangle is not None:
-            axes[1].plot([valid_triangle.v0.x, valid_triangle.v1.x, valid_triangle.v2.x, valid_triangle.v0.x],
-                         [valid_triangle.v0.y, valid_triangle.v1.y, valid_triangle.v2.y, valid_triangle.v0.y])
-
-        pyplot.pause(0.2)
-    pyplot.ioff()
-    pyplot.show()
-
-
-if __name__ == "__main__":
-    vertices = []
-    for i in range(20):
-        vertex = Vertex(random.randint(-700000, 700000),
-                        random.randint(-700000, 700000))
-        vertices.append(vertex)
-    main(vertices)
+    return valid_triangles
