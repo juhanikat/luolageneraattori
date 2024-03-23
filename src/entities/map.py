@@ -16,7 +16,8 @@ class Map():
         self.size_x = size_x
         self.size_y = size_y
         self.placed_rooms = []
-        self.map = [["." for _ in range(0, size_x)] for _ in range(0, size_y)]
+        self.visual = [["." for _ in range(0, size_x)]
+                       for _ in range(0, size_y)]
 
     def place_rooms(self, amount, room_min_size=3, room_max_size=3, room_exact_size=None, overlap=False) -> None:
 
@@ -58,12 +59,10 @@ class Map():
                     for placed_room in self.placed_rooms:
                         if placed_room.covers(coord):  # if rooms overlap
                             return False
-                            # delete or move somewhere else later
-                            # debug_overlapping(room, placed_room, self.map)
 
             for y in range(y_coord, y_coord + room.size_y):
                 for x in range(x_coord, x_coord + room.size_x):
-                    self.map[y][x] = "#"
+                    self.visual[y][x] = "#"
             return room
 
         if room_min_size < 1:
@@ -102,27 +101,10 @@ class Map():
 
     def __str__(self) -> str:
         representation = f"  {' '.join(str(x) for x in list(range(0, self.size_x)))} \n"
-        for index, row in enumerate(self.map):
+        for index, row in enumerate(self.visual):
             representation += f"{index} {' '.join(row)} \n"
         representation += f"\n Map size: Y{self.size_y} * X{self.size_x} \n"
         representation += f"Rooms: {len(self.placed_rooms)} \n"
         for index, room in enumerate(self.placed_rooms):
             representation += f"Room {index}: {room} \n"
         return representation
-
-
-def debug_overlapping(current_room: Room, placed_room: Room, map: list):
-    print("overlap!!")
-    print(
-        f"new room: {current_room}")
-    print(
-        f"conflicting room: {placed_room}")
-    for coord in placed_room.get_all_coords():
-        map[coord[0]][coord[1]] = "O"
-    for coord in current_room.get_all_coords():
-        if placed_room.covers(coord):
-            map[coord[0]][coord[1]] = "!"
-        else:
-            map[coord[0]][coord[1]] = "N"
-    print(map)
-    exit()

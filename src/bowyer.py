@@ -10,6 +10,9 @@ class Vertex:
     def __eq__(self, other) -> bool:
         return self.x == other.x and self.y == other.y
 
+    def __str__(self) -> str:
+        return f"x: {self.x} y: {self.y}"
+
 
 class Edge:
 
@@ -22,6 +25,9 @@ class Edge:
     def __eq__(self, other) -> bool:
         return (self.v0 == other.v0 and self.v1 == other.v1) or \
             (self.v0 == other.v1 and self.v1 == other.v0)
+
+    def __str__(self) -> str:
+        return f"length: {self.length} vertex 0: {self.v0} vertex 1: {self.v1}"
 
 
 class Triangle:
@@ -37,12 +43,20 @@ class Triangle:
         edge0_length = self.edge0.length
         edge1_length = self.edge1.length
         edge2_length = self.edge2.length
+
+        divisor = (math.sqrt(
+            (edge0_length + edge1_length + edge2_length) *
+            (edge1_length + edge2_length - edge0_length) *
+            (edge2_length + edge0_length - edge1_length) *
+            (edge0_length + edge1_length - edge2_length)))
+        if divisor == 0:
+            print("Divisor in triangle is zero!")
+            print(self)
+            print(f"divisor: {divisor}")
+            exit()
         self.circumcircle_radius = (
-            edge0_length * edge1_length * edge2_length) / (math.sqrt(
-                (edge0_length + edge1_length + edge2_length) *
-                (edge1_length + edge2_length - edge0_length) *
-                (edge2_length + edge0_length - edge1_length) *
-                (edge0_length + edge1_length - edge2_length)))
+            edge0_length * edge1_length * edge2_length) / divisor
+
         ax = v0.x
         ay = v0.y
         bx = v1.x
@@ -61,8 +75,19 @@ class Triangle:
         dy = self.circumcenter[1] - vertex.y
         return math.sqrt(dx * dx + dy * dy) <= self.circumcircle_radius
 
+    def __str__(self) -> str:
+        return f"vertices: \n {self.v0} \n {self.v1} \n {self.v2} \n edges: \n {self.edge0} \n {self.edge1} \n {self.edge2} \n"
 
-def get_unique_edges(edges: list):
+
+def get_unique_edges(edges: list) -> list:
+    """Takes a list of edges and filters out non-unique ones.
+
+    Args:
+        edges (list): The list of edges to filter.
+
+    Returns:
+        list: The filtered list of edges.
+    """
     unique_edges = []
 
     for i in range(len(edges)):
@@ -78,6 +103,16 @@ def get_unique_edges(edges: list):
 
 
 def add_vertex_and_update(vertex: Vertex, triangles: list) -> list:
+    """Adds a vertex to the triangulation and checks if it is inside any triangle's circumcircle.
+    If so, it will remove those triangles and adds new triangles in their place that have the new vertex as one of their vertices.
+
+    Args:
+        vertex (Vertex): The vertex that will be added.
+        triangles (list): All triangles in the triangulation so far.
+
+    Returns:
+        list: The updated triangles.
+    """
     edges = []
     valid_triangles = []  # triangles that won't be deleted
 
@@ -104,12 +139,13 @@ def bowyer_watson(x_y_coords: list) -> list:
     https://www.gorillasun.de/blog/bowyer-watson-algorithm-for-delaunay-triangulation/#an-intuitive-explanation-of-the-algorithm
 
     Args:
-        vertices (list): List of vertices (points) that are added to the triangulation.
+        vertices (list): List of (x, y) coordinates (representing rooms) that are added to the triangulation.
 
     Returns:
         list: List of triangles that are in the valid Delaunay triangulation.
     """
 
+    # converts x,y coordinate pairs into Vertices
     vertices = []
     for coord in x_y_coords:
         vertices.append(Vertex(coord[0], coord[1]))

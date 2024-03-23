@@ -6,17 +6,17 @@ from matplotlib.patches import Rectangle
 from bowyer import bowyer_watson
 
 
-def display_figure(triangles: list, rooms: list, map_size: tuple) -> None:
+def display_figure(triangles: list, rooms: list, map_size: tuple, circumcircles=False) -> None:
     """Displays a figure showing the output of the program.
 
     Args:
         triangles (list): List of triangles.
         rooms (list): List of rooms. These will be used to place Rectangles on the figure.
+        map_size (tuple): Map size in (x, y) coordinate format. Will be used to set the axis values.
+        circumcircles (bool, optional): Whether to draw circumcircles around triangles. Defaults to False.
     """
 
-    draw_circumcircles = False
     _, axis = pyplot.subplots(1)
-    axis.set_xlabel("After removing supertriangle and adjacent triangles")
     pyplot.gca().set_aspect('equal')
     pyplot.xlim(-10, map_size[0] + 10)
     pyplot.ylim(-10, map_size[1] + 10)
@@ -27,10 +27,9 @@ def display_figure(triangles: list, rooms: list, map_size: tuple) -> None:
     pyplot.ion()
 
     for triangle in triangles:
-        print(triangle)
         axis.plot([triangle.v0.x, triangle.v1.x, triangle.v2.x, triangle.v0.x],
                   [triangle.v0.y, triangle.v1.y, triangle.v2.y, triangle.v0.y])
-        if draw_circumcircles:
+        if circumcircles:
             circumcircle = pyplot.Circle(
                 triangle.circumcenter, triangle.circumcircle_radius, color='r', fill=False, linestyle="dashed")
             axis.add_artist(circumcircle)
@@ -55,6 +54,7 @@ def main():
         return args
 
     args = parse_args()
+    print(args)
     map = Map(args.map_size_x, args.map_size_y)
     try:
         map.place_rooms(amount=args.amount, room_min_size=args.room_min_size,
@@ -66,7 +66,7 @@ def main():
     rooms = map.placed_rooms
     for room in rooms:
         x_y_coords.append(room.bottom_left_coords)
-    triangles = bowyer_watson(x_y_coords)
+    triangles = bowyer_watson((x_y_coords))
     display_figure(triangles, rooms, (args.map_size_x, args.map_size_y))
     print(map)
 
