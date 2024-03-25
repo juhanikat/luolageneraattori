@@ -10,6 +10,10 @@ class RoomPlacementError(Exception):
     pass
 
 
+class RoomAmountError(Exception):
+    pass
+
+
 class Map():
 
     def __init__(self, size_x=10, size_y=10) -> None:
@@ -73,7 +77,10 @@ class Map():
         if room_max_size < room_min_size:
             raise RoomSizeError(
                 "Maximum room size cannot be less than minimum room size.")
+        if amount < 1:
+            raise RoomAmountError("Amount of rooms cannot be less than 1.")
 
+        self.placed_rooms.clear()  # remove all previous rooms
         tries = 0
         strikes = 0
         index = 0

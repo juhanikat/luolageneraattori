@@ -4,6 +4,7 @@ from entities.map import Map, RoomPlacementError
 from matplotlib import pyplot
 from matplotlib.patches import Rectangle
 from bowyer import bowyer_watson
+from ui.ui import UI
 
 
 def display_figure(triangles: list, rooms: list, map_size: tuple, circumcircles=False) -> None:
@@ -56,6 +57,9 @@ def main():
     args = parse_args()
     print(args)
     map = Map(args.map_size_x, args.map_size_y)
+    ui = UI(map)
+    ui.start()
+    return
     try:
         map.place_rooms(amount=args.amount, room_min_size=args.room_min_size,
                         room_max_size=args.room_max_size, room_exact_size=args.room_exact_size, overlap=args.can_overlap)
