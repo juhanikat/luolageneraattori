@@ -77,6 +77,11 @@ class Map():
         if room_max_size < room_min_size:
             raise RoomSizeError(
                 "Maximum room size cannot be less than minimum room size.")
+        if room_exact_size and room_exact_size < 0:
+            raise RoomSizeError("Exact room size cannot be less than 1.")
+        if room_exact_size and (room_exact_size > self.size_x or room_exact_size > self.size_y):
+            raise RoomSizeError(
+                "Exact room size cannot be larger than map size.")
         if amount < 1:
             raise RoomAmountError("Amount of rooms cannot be less than 1.")
 

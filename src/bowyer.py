@@ -2,6 +2,7 @@ import math
 
 
 class Vertex:
+    """This represents a node in the network."""
 
     def __init__(self, x, y) -> None:
         self.x = x
@@ -15,8 +16,21 @@ class Vertex:
 
 
 class Edge:
+    """This represents a line in the network that connects two vertices together.
+
+        Attributes:
+            v0 (Vertex): First vertex.
+            v1 (Vertex): Second vertex.
+            length (float): Length of the edge.
+    """
 
     def __init__(self, v0: Vertex, v1: Vertex) -> None:
+        """
+        Args:
+            v0 (Vertex): First vertex.
+            v1 (Vertex): Second vertex.
+        """
+
         self.v0 = v0
         self.v1 = v1
         self.length = math.sqrt(
@@ -31,8 +45,20 @@ class Edge:
 
 
 class Triangle:
+    """A triangle between 3 vertices.
+
+        Attributes:
+            lots
+    """
 
     def __init__(self, v0: Vertex, v1: Vertex, v2: Vertex) -> None:
+        """A triangle between 3 vertices.
+
+        Args:
+            v0 (Vertex): First vertex.
+            v1 (Vertex): Second vertex.
+            v2 (Vertex): Third vertex.
+        """
         self.v0 = v0
         self.v1 = v1
         self.v2 = v2
@@ -70,7 +96,15 @@ class Triangle:
               * (ax - cx) + (cx * cx + cy * cy) * (bx - ax)) / d
         self.circumcenter = (ux, uy)
 
-    def vertex_in_circumcirc(self, vertex: Vertex):
+    def vertex_in_circumcirc(self, vertex: Vertex) -> bool:
+        """Checks if a given vertex is in the circumcircle of this triangle.
+
+        Args:
+            vertex (Vertex): The vertex that is checked.
+
+        Returns:
+            _type_: True if vertex is inside the circumcircle, and False otherwise.
+        """
         dx = self.circumcenter[0] - vertex.x
         dy = self.circumcenter[1] - vertex.y
         return math.sqrt(dx * dx + dy * dy) <= self.circumcircle_radius

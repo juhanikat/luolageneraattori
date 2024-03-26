@@ -2,7 +2,12 @@ from invoke import task
 
 
 @task
-def start(ctx, amount=5, room_min_size=2, room_max_size=4, room_exact_size=0, can_overlap=False, map_size_x=20, map_size_y=20):
+def start(ctx):
+    ctx.run("poetry run python3 src/index.py")
+
+
+@task
+def argstart(ctx, amount=5, room_min_size=2, room_max_size=4, room_exact_size=0, can_overlap=False, map_size_x=20, map_size_y=20):
     if can_overlap:
         can_overlap = "--can-overlap"
     else:
@@ -16,6 +21,11 @@ def start(ctx, amount=5, room_min_size=2, room_max_size=4, room_exact_size=0, ca
         {can_overlap} \
         --map-size-x={map_size_x} \
         --map-size-y={map_size_y}")
+
+
+@task
+def lint(ctx):
+    ctx.run("pylint src")
 
 
 @task
