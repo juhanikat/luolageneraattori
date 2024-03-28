@@ -23,6 +23,9 @@ class Map():
         self.visual = [["." for _ in range(0, size_x)]
                        for _ in range(0, size_y)]
 
+    def get_size(self) -> tuple:
+        return (self.size_x, self.size_y)
+
     def place_rooms(self, amount, room_min_size=3, room_max_size=3, room_exact_size=None, overlap=False) -> None:
 
         def create_rooms(amount: int) -> list:

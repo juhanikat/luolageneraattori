@@ -24,13 +24,13 @@ def validate_int(name: str, input: str):
 
 
 DEFAULT_ARGS = {
-    "amount": 5,
-    "room_min_size": 2,
-    "room_max_size": 4,
-    "room_exact_size": 0,
+    "amount": "5",
+    "room_min_size": "2",
+    "room_max_size": "4",
+    "room_exact_size": "0",
     "can_overlap": False,
-    "map_size_x": 20,
-    "map_size_y": 20
+    "map_size_x": "20",
+    "map_size_y": "20"
 }
 
 
@@ -71,7 +71,7 @@ def debug_overlapping(new_room: Room, existing_room: Room, map_visual: list):
     print(map_visual)
 
 
-def display_figure(triangles: list, rooms: list, map_size: tuple, circumcircles=False) -> None:
+def display_rooms_and_triangles(triangles: list, rooms: list, map_size: tuple, circumcircles=False) -> None:
     """Displays a figure showing the output of the program.
 
     Args:
@@ -98,6 +98,35 @@ def display_figure(triangles: list, rooms: list, map_size: tuple, circumcircles=
             circumcircle = pyplot.Circle(
                 triangle.circumcenter, triangle.circumcircle_radius, color='r', fill=False, linestyle="dashed")
             axis.add_artist(circumcircle)
+        pyplot.pause(0.2)
+    pyplot.ioff()
+    pyplot.show()
+
+
+def display_rooms_and_edges(edges: list, rooms: list, map_size: tuple, circumcircles=False) -> None:
+    """Displays a figure showing the output of the program.
+
+    Args:
+        triangles (list): List of triangles.
+        rooms (list): List of rooms. These will be used to place Rectangles on the figure.
+        map_size (tuple): Map size in (x, y) coordinate format. Will be used to set the axis values.
+        circumcircles (bool, optional): Whether to draw circumcircles around triangles. Defaults to False.
+    """
+
+    _, axis = pyplot.subplots(1)
+    pyplot.gca().set_aspect('equal')
+    pyplot.xlim(-10, map_size[0] + 10)
+    pyplot.ylim(-10, map_size[1] + 10)
+    for room in rooms:
+        rectangle = Rectangle(room.bottom_left_coords,
+                              room.size_x, room.size_y, fc=(0, 0, 0, 0.1), ec=(0, 0, 0, 0.1))
+        axis.add_patch(rectangle)
+    pyplot.ion()
+
+    for edge in edges:
+        axis.plot([edge.v0.x, edge.v1.x],
+                  [edge.v0.y, edge.v1.y])
+
         pyplot.pause(0.2)
     pyplot.ioff()
     pyplot.show()

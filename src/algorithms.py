@@ -1,4 +1,6 @@
 import math
+import random
+from utilities import display_rooms_and_edges
 
 
 class Vertex:
@@ -30,7 +32,7 @@ class Edge:
             v0 (Vertex): First vertex.
             v1 (Vertex): Second vertex.
         """
-
+        self.id = random.randint(0, 999999999)
         self.v0 = v0
         self.v1 = v1
         self.length = math.sqrt(
@@ -203,3 +205,40 @@ def bowyer_watson(x_y_coords: list) -> list:
     )]
 
     return valid_triangles
+
+
+def search(edge, used_vertices, vieruslista, result):
+    if edge.v0 in used_vertices and edge.v1 in used_vertices:
+        return
+    result.append(edge)
+    used_vertices.append(edge.v0)
+    used_vertices.append(edge.v1)
+    next_edge = min(vieruslista[edge.id], key=lambda x: x.length)
+    print(f"next {next_edge}")
+    for edge in vieruslista[edge.id]:
+        print(edge)
+    search(next_edge, used_vertices, vieruslista, result)
+    return result
+
+
+def spanning_tree(edges: list):
+    vieruslista = {}
+    for edge in edges:
+        vieruslista[edge.id] = []
+        for edge2 in edges:
+            if edge.v0 == edge2.v0 or edge.v0 == edge2.v1 or edge.v1 == edge2.v0 or edge.v1 == edge2.v1:
+                vieruslista[edge.id].append(edge2)
+    return search(edges[0], [], vieruslista, [])
+
+
+if __name__ == "__main__":
+    vertices = []
+    for i in range(100):
+        vertex = Vertex(random.randint(0, 100), random.randint(0, 100))
+        vertices.append(vertex)
+    edges = []
+    for i in range(99):
+        edges.append(Edge(vertices[i], vertices[i+1]))
+    result = spanning_tree(edges)
+    print(result)
+    display_rooms_and_edges(result, [], map_size=(100, 100))

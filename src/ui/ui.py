@@ -1,7 +1,8 @@
 import tkinter as tk
 from entities.map import Map, RoomAmountError, RoomSizeError, RoomPlacementError
-from bowyer import bowyer_watson
-from utilities import display_figure, convert_rooms_to_x_y_coords, validate_int, DEFAULT_ARGS
+from algorithms import bowyer_watson
+from utilities import display_rooms_and_triangles, display_rooms_and_edges, convert_rooms_to_x_y_coords, validate_int, DEFAULT_ARGS
+from services.joku import generate_dungeon
 
 
 class UI:
@@ -15,18 +16,23 @@ class UI:
     def handle_button_click(self, amount,
                             room_min_size,
                             room_max_size):
+        if room_min_size.strip() == "":
+            room_min_size = DEFAULT_ARGS["room_min_size"]
+        if room_max_size.strip() == "":
+            room_max_size = DEFAULT_ARGS["room_max_size"]
         try:
-            amount = validate_int("Amount", amount)
-            if room_min_size.strip() == "":
-                room_min_size = DEFAULT_ARGS["room_min_size"]
-            if room_max_size.strip() == "":
-                room_max_size = DEFAULT_ARGS["room_max_size"]
+            validate_int("Amount", amount)
 
-                amount = int(amount)
-                room_min_size = int(room_min_size)
-                room_max_size = int(room_max_size)
-                self.map.place_rooms(
-                    amount=amount, room_min_size=room_min_size, room_max_size=room_max_size)
+            validate_int("Minimum room size", room_min_size)
+
+            validate_int("Maximum room size", room_max_size)
+
+            amount = int(amount)
+            room_min_size = int(room_min_size)
+            room_max_size = int(room_max_size)
+            print(amount)
+            self.map.place_rooms(
+                amount=amount, room_min_size=room_min_size, room_max_size=room_max_size)
         except ValueError as exception:
             self.error_message.config(
                 text=exception)
@@ -34,10 +40,9 @@ class UI:
         except (RoomAmountError, RoomSizeError, RoomPlacementError) as exception:
             self.error_message.config(text=exception)
             return
-        rooms = self.map.placed_rooms
-        x_y_coords = convert_rooms_to_x_y_coords(rooms)
-        triangles = bowyer_watson(x_y_coords)
-        display_figure(triangles, rooms, (self.map.size_x, self.map.size_y))
+        edges = generate_dungeon(self.map)
+        display_rooms_and_edges(
+            edges, self.map.placed_rooms, self.map.get_size())
 
     def create_ui(self):
         amount = tk.StringVar(self.root)
