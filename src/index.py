@@ -14,8 +14,8 @@ def main():
         parser.add_argument(
             "--can-overlap", action=argparse.BooleanOptionalAction, default=False)
 
-        parser.add_argument("--map-size-x", type=int, default=20)
-        parser.add_argument("--map-size-y", type=int, default=20)
+        parser.add_argument("--map-size-x", type=int, default=100)
+        parser.add_argument("--map-size-y", type=int, default=100)
         args = parser.parse_args()
         return args
 

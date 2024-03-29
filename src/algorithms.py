@@ -213,11 +213,8 @@ def search(edge, used_vertices, vieruslista, result):
     result.append(edge)
     used_vertices.append(edge.v0)
     used_vertices.append(edge.v1)
-    next_edge = min(vieruslista[edge.id], key=lambda x: x.length)
-    print(f"next {next_edge}")
-    for edge in vieruslista[edge.id]:
-        print(edge)
-    search(next_edge, used_vertices, vieruslista, result)
+    for next_edge in vieruslista[edge.id]:
+        search(next_edge, used_vertices, vieruslista, result)
     return result
 
 
