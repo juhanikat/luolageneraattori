@@ -1,4 +1,6 @@
 class Room():
+    """Depicts a room. Rooms have a length, a width and a location (x, y coordinate pair).
+    """
 
     def __init__(self, size_x, size_y) -> None:
         self.size_x = size_x
@@ -35,4 +37,4 @@ class Room():
         return coord in coords
 
     def __str__(self) -> str:
-        return f"bottom left {self.bottom_left_coords}, size x: {self.size_x}, size y: {self.size_y}"
+        return f"coords: {self.bottom_left_coords}, size x: {self.size_x}, size y: {self.size_y}"

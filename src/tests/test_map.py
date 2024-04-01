@@ -1,8 +1,6 @@
-
 import pytest
 
-from ..entities.map import Map, RoomSizeError, RoomPlacementError
-from ..entities.room import Room
+from entities.map import Map, RoomPlacementError, RoomSizeError
 
 
 @pytest.fixture

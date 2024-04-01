@@ -1,8 +1,9 @@
 import tkinter as tk
-from entities.map import Map, RoomAmountError, RoomSizeError, RoomPlacementError
-from algorithms import bowyer_watson
-from utilities import display_rooms_and_triangles, display_rooms_and_edges, convert_rooms_to_x_y_coords, validate_int, DEFAULT_ARGS
-from services.joku import generate_dungeon
+
+from entities.map import (Map, RoomAmountError, RoomPlacementError,
+                          RoomSizeError)
+from services.generate import generate_dungeon
+from utilities import DEFAULT_ARGS, display_rooms_and_edges, validate_int
 
 
 class UI:

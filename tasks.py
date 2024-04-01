@@ -25,12 +25,12 @@ def argstart(ctx, amount=5, room_min_size=2, room_max_size=4, room_exact_size=0,
 
 @task
 def lint(ctx):
-    ctx.run("poetry run python -m pylint src")
+    ctx.run("poetry run python -m pylint src", pty=True)
 
 
 @task
 def test(ctx):
-    ctx.run("poetry run pytest", pty=True)
+    ctx.run("poetry run pytest -v", pty=True)
 
 
 @task

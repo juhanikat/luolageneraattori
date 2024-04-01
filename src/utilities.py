@@ -1,6 +1,7 @@
-from entities.room import Room
 from matplotlib import pyplot
 from matplotlib.patches import Rectangle
+
+from entities.room import Room
 
 
 def validate_int(name: str, input: str):
@@ -17,8 +18,8 @@ def validate_int(name: str, input: str):
         raise ValueError(f"{name} must not be empty.")
     try:
         input = int(input)
-    except ValueError as _:
-        raise ValueError(f"{name} must be a number.")
+    except ValueError as exception:
+        raise ValueError(f"{name} must be a number.") from exception
     if input < 1:
         raise ValueError(f"{name} cannot be less than 1.")
 
@@ -103,16 +104,7 @@ def display_rooms_and_triangles(triangles: list, rooms: list, map_size: tuple, c
     pyplot.show()
 
 
-def display_rooms_and_edges(edges: list, rooms: list, map_size: tuple, circumcircles=False) -> None:
-    """Displays a figure showing the output of the program.
-
-    Args:
-        triangles (list): List of triangles.
-        rooms (list): List of rooms. These will be used to place Rectangles on the figure.
-        map_size (tuple): Map size in (x, y) coordinate format. Will be used to set the axis values.
-        circumcircles (bool, optional): Whether to draw circumcircles around triangles. Defaults to False.
-    """
-
+def display_rooms_and_edges(edges: list, rooms: list, map_size: tuple) -> None:
     _, axis = pyplot.subplots(1)
     pyplot.gca().set_aspect('equal')
     pyplot.xlim(-10, map_size[0] + 10)

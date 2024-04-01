@@ -1,6 +1,5 @@
 import math
 import random
-from utilities import display_rooms_and_edges
 
 
 class Vertex:
@@ -126,14 +125,14 @@ def get_unique_edges(edges: list) -> list:
     """
     unique_edges = []
 
-    for i in range(len(edges)):
+    for i, edge1 in enumerate(edges):
         unique = True
-        for j in range(len(edges)):
-            if i != j and edges[i] == edges[j]:
+        for j, edge2 in enumerate(edges):
+            if i != j and edge1 == edge2:
                 unique = False
                 break
         if unique:
-            unique_edges.append(edges[i])
+            unique_edges.append(edge1)
 
     return unique_edges
 
@@ -171,11 +170,10 @@ def add_vertex_and_update(vertex: Vertex, triangles: list) -> list:
 
 def bowyer_watson(x_y_coords: list) -> list:
     """An implementation of the Bowyer-Watson algorithm.
-    Implemented with the help this tutorial: 
-    https://www.gorillasun.de/blog/bowyer-watson-algorithm-for-delaunay-triangulation/#an-intuitive-explanation-of-the-algorithm
 
     Args:
-        vertices (list): List of (x, y) coordinates (representing rooms) that are added to the triangulation.
+        vertices (list): List of (x, y) coordinates (representing rooms) 
+        that are added to the triangulation.
 
     Returns:
         list: List of triangles that are in the valid Delaunay triangulation.
@@ -207,35 +205,44 @@ def bowyer_watson(x_y_coords: list) -> list:
     return valid_triangles
 
 
-def search(edge, used_vertices, vieruslista, result):
+def search(edge: Edge, used_vertices: list, next_to: list, result: list) -> list:
+    """_summary_
+
+    Args:
+        edge (Edge): _description_
+        used_vertices (list): _description_
+        next_to (list): _description_
+        result (list): _description_
+
+    Returns:
+        list: _description_
+    """
     if edge.v0 in used_vertices and edge.v1 in used_vertices:
-        return
+        return None
     result.append(edge)
     used_vertices.append(edge.v0)
     used_vertices.append(edge.v1)
-    for next_edge in vieruslista[edge.id]:
-        search(next_edge, used_vertices, vieruslista, result)
+    for next_edge in next_to[edge.id]:
+        search(next_edge, used_vertices, next_to, result)
     return result
 
 
-def spanning_tree(edges: list):
-    vieruslista = {}
+def spanning_tree(edges: list) -> list:
+    """Takes a list of edges and creates a non-looping path.
+
+    Args:
+        edges (list): The list of edges.
+
+    Returns:
+        list: The edges that are in the spanning tree.
+    """
+    next_to = {}
     for edge in edges:
-        vieruslista[edge.id] = []
+        next_to[edge.id] = []
         for edge2 in edges:
-            if edge.v0 == edge2.v0 or edge.v0 == edge2.v1 or edge.v1 == edge2.v0 or edge.v1 == edge2.v1:
-                vieruslista[edge.id].append(edge2)
-    return search(edges[0], [], vieruslista, [])
-
-
-if __name__ == "__main__":
-    vertices = []
-    for i in range(100):
-        vertex = Vertex(random.randint(0, 100), random.randint(0, 100))
-        vertices.append(vertex)
-    edges = []
-    for i in range(99):
-        edges.append(Edge(vertices[i], vertices[i+1]))
-    result = spanning_tree(edges)
-    print(result)
-    display_rooms_and_edges(result, [], map_size=(100, 100))
+            if edge.v0 == edge2.v0 \
+                    or edge.v0 == edge2.v1 \
+                    or edge.v1 == edge2.v0 \
+                    or edge.v1 == edge2.v1:
+                next_to[edge.id].append(edge2)
+    return search(edges[0], [], next_to, [])

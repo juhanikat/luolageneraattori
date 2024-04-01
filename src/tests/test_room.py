@@ -1,6 +1,4 @@
-import pytest
-
-from ..entities.room import Room
+from entities.room import Room
 
 
 def test_room_area_is_correct():

@@ -1,6 +1,6 @@
 import argparse
-from entities.map import Map, RoomPlacementError
-from algorithms import bowyer_watson
+
+from entities.map import Map
 from ui.ui import UI
 
 

@@ -1,6 +1,4 @@
-import pytest
-
-from ..algorithms import bowyer_watson
+from algorithms import bowyer_watson
 
 
 def test_3_rooms_results_in_one_triangle():
