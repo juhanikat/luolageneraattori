@@ -1,7 +1,5 @@
 import random
 
-from utilities import DEFAULT_ARGS
-
 from .room import Room
 
 
@@ -24,15 +22,21 @@ class Map():
     """A class that holds all placed rooms.
     """
 
-    def __init__(self, size_x=10, size_y=10) -> None:
+    def __init__(self, size_x, size_y) -> None:
         self.size_x = size_x
         self.size_y = size_y
         self.placed_rooms = []
 
     def get_size(self) -> tuple:
+        """Returns a tuple containing the width and length of the map.
+
+        Returns:
+            tuple: Map dimensions in (width, length) format.
+        """
         return (self.size_x, self.size_y)
 
-    def create_rooms(self, room_min_size: int, room_max_size: int, room_exact_size: int, amount: int) -> list:
+    def create_rooms(self, amount: int, room_min_size: int = 2,
+                     room_max_size: int = 5, room_exact_size: int = 0) -> list:
         """Creates rooms with sizes between <room-min-size> and <room-max-size>.
 
         Args:
@@ -72,8 +76,23 @@ class Map():
                         return False
         return room
 
-    def place_rooms(self, amount: int, room_min_size: int, room_max_size: int,
-                    room_exact_size: bool = None, overlap: bool = False) -> None:
+    def place_rooms(self, amount: int = 10, room_min_size: int = 2, room_max_size: int = 5,
+                    room_exact_size: int = 0, overlap: bool = False) -> None:
+        """Creates rooms and places them on the map.
+
+        Args:
+            amount (int, optional): Amount of rooms. Defaults to 10.
+            room_min_size (int, optional): Minimum size of rooms. Defaults to 2.
+            room_max_size (int, optional): Maximum size of rooms. Defaults to 5.
+            room_exact_size (int, optional): Exact size of rooms. 
+            If used, room_min_size and room_max_size do nothing. Defaults to 0.
+            overlap (bool, optional): If True, rooms can overlap with each other. Defaults to False.
+
+        Raises:
+            RoomSizeError: Raised if room size parameters are invalid.
+            RoomAmountError: Raised if room amount parameter is invalid.
+            RoomPlacementError: Raised if rooms cannot be placed on the map in reasonable time.
+        """
 
         if room_min_size < 1:
             raise RoomSizeError("Minimum room size cannot be less than 1.")
@@ -96,14 +115,21 @@ class Map():
         strikes = 0
         index = 0
         created_rooms = self.create_rooms(
-            amount=amount, room_min_size=room_min_size, room_max_size=room_max_size, room_exact_size=room_exact_size)
+            amount=amount,
+            room_min_size=room_min_size,
+            room_max_size=room_max_size,
+            room_exact_size=room_exact_size)
         while True:
             tries += 1
             if tries >= 1000:
                 print(
                     f"Tried to place room {tries} times, removing all rooms to try again.")
                 self.placed_rooms.clear()
-                created_rooms = self.create_rooms(amount=amount)
+                created_rooms = self.create_rooms(
+                    amount=amount,
+                    room_min_size=room_min_size,
+                    room_max_size=room_max_size,
+                    room_exact_size=room_exact_size)
                 tries = 0
                 strikes += 1
                 if strikes == 10:
@@ -111,7 +137,7 @@ class Map():
                         "Rooms cannot be placed in reasonable time, they are likely too large to fit the map.")
                 index = 0
                 continue
-            placed = self.place_new_room(created_rooms[index])
+            placed = self.place_new_room(created_rooms[index], overlap=overlap)
             if placed:
                 self.placed_rooms.append(placed)
                 index += 1

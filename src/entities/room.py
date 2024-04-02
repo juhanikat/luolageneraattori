@@ -6,7 +6,7 @@ class Room():
         self.size_x = size_x
         self.size_y = size_y
         self.area = size_x*size_y
-        self.bottom_left_coords = None  # (X, Y)
+        self.bottom_left_coords = ()
         self.all_coords = []  # list of tuples
 
     def get_all_coords(self):

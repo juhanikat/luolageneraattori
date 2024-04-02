@@ -206,16 +206,10 @@ def bowyer_watson(x_y_coords: list) -> list:
 
 
 def search(edge: Edge, used_vertices: list, next_to: list, result: list) -> list:
-    """_summary_
-
-    Args:
-        edge (Edge): _description_
-        used_vertices (list): _description_
-        next_to (list): _description_
-        result (list): _description_
+    """Used by spanning_tree to remove unnecessary edges.
 
     Returns:
-        list: _description_
+        list: The edges that are in the spanning tree.
     """
     if edge.v0 in used_vertices and edge.v1 in used_vertices:
         return None

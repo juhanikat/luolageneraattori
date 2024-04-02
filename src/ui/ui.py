@@ -22,16 +22,9 @@ class UI:
         if room_max_size.strip() == "":
             room_max_size = DEFAULT_ARGS["room_max_size"]
         try:
-            validate_int("Amount", amount)
-
-            validate_int("Minimum room size", room_min_size)
-
-            validate_int("Maximum room size", room_max_size)
-
-            amount = int(amount)
-            room_min_size = int(room_min_size)
-            room_max_size = int(room_max_size)
-            print(amount)
+            amount = validate_int("Amount", amount)
+            room_min_size = validate_int("Minimum room size", room_min_size)
+            room_max_size = validate_int("Maximum room size", room_max_size)
             self.map.place_rooms(
                 amount=amount, room_min_size=room_min_size, room_max_size=room_max_size)
         except ValueError as exception:

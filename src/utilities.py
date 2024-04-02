@@ -4,7 +4,7 @@ from matplotlib.patches import Rectangle
 from entities.room import Room
 
 
-def validate_int(name: str, input: str):
+def validate_int(name: str, input: str) -> int:
     """Checks that an input is not empty, can be converted to an integer, and is not less than 1.
 
     Args:
@@ -13,6 +13,9 @@ def validate_int(name: str, input: str):
 
     Raises:
         ValueError: If any of the checks fail.
+
+    Returns:
+        int: Input value as an integer.
     """
     if input.strip() == "":
         raise ValueError(f"{name} must not be empty.")
@@ -22,6 +25,7 @@ def validate_int(name: str, input: str):
         raise ValueError(f"{name} must be a number.") from exception
     if input < 1:
         raise ValueError(f"{name} cannot be less than 1.")
+    return input
 
 
 DEFAULT_ARGS = {
