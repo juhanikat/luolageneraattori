@@ -72,22 +72,24 @@ class Triangle:
         self.edge1 = Edge(v1, v2)
         self.edge2 = Edge(v2, v0)
 
-        edge0_length = self.edge0.length
-        edge1_length = self.edge1.length
-        edge2_length = self.edge2.length
+        self.circumcircle_radius = self.calculate_circumcircle_radius(
+            self.edge0, self.edge1, self.edge2)
 
+        self.circumcenter = self.calculate_circumcenter(v0, v1, v2)
+
+    def calculate_circumcircle_radius(self, edge0: Edge, edge1: Edge, edge2: Edge):
         divisor = (math.sqrt(
-            (edge0_length + edge1_length + edge2_length) *
-            (edge1_length + edge2_length - edge0_length) *
-            (edge2_length + edge0_length - edge1_length) *
-            (edge0_length + edge1_length - edge2_length)))
+            (edge0.length + edge1.length + edge2.length) *
+            (edge1.length + edge2.length - edge0.length) *
+            (edge2.length + edge0.length - edge1.length) *
+            (edge0.length + edge1.length - edge2.length)))
         if divisor == 0:
             raise BadTriangleError(
-                f"The vertices ({self.v0}), ({self.v1}), ({self.v2}) \
+                f"The vertices ({edge0}), ({edge1}), ({edge2}) \
                 cannot be made into a triangle.")
-        self.circumcircle_radius = (
-            edge0_length * edge1_length * edge2_length) / divisor
+        return (edge0.length * edge1.length * edge2.length) / divisor
 
+    def calculate_circumcenter(self, v0: Vertex, v1: Vertex, v2: Vertex):
         ax = v0.x
         ay = v0.y
         bx = v1.x
@@ -99,7 +101,7 @@ class Triangle:
               * (cy - ay) + (cx * cx + cy * cy) * (ay - by)) / d
         uy = ((ax * ax + ay * ay) * (cx - bx) + (bx * bx + by * by)
               * (ax - cx) + (cx * cx + cy * cy) * (bx - ax)) / d
-        self.circumcenter = (ux, uy)
+        return (ux, uy)
 
     def vertex_in_circumcirc(self, vertex: Vertex) -> bool:
         """Checks if a given vertex is in the circumcircle of this triangle.

@@ -12,10 +12,10 @@ Algoritmeja:
 ```
 Name                   Stmts   Miss Branch BrPart  Cover   Missing
 ------------------------------------------------------------------
-src/algorithms.py        103      4     32      1    96%   21, 50, 85, 117
+src/algorithms.py        104      4     32      1    96%   21, 50, 87, 120
 src/entities/map.py       75      8     34      3    88%   106, 108, 111, 148-152
 src/entities/room.py      20      1      6      0    96%   40
 src/utilities.py          60     60     22      0     0%   1-128
 ------------------------------------------------------------------
-TOTAL                    258     73     94      4    71%
+TOTAL                    259     73     94      4    71%
 ```
