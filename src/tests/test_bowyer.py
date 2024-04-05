@@ -6,6 +6,15 @@ def test_3_rooms_results_in_one_triangle():
     assert len(triangles) == 1
 
 
+def test_thousand_rooms():
+    coords = []
+    for i in range(1000):
+        x = i
+        y = i**2
+        coords.append((x, y))
+    bowyer_watson(coords)
+
+
 def test_rooms_with_same_y_coordinate_results_in_0_triangles():
     triangles = bowyer_watson([(0, 0), (10, 0), (56, 0)])
     assert len(triangles) == 0

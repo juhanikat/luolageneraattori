@@ -9,7 +9,7 @@ def test_triangle_turns_into_2_edges():
     assert len(result) == 2
 
 
-def test_square_turns_into_3_edges():
+def test_rectangle_turns_into_3_edges():
     edge1 = Edge(Vertex(0, 0), Vertex(0, 1))
     edge2 = Edge(Vertex(0, 0), Vertex(1, 0))
     edge3 = Edge(Vertex(0, 1), Vertex(1, 1))

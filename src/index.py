@@ -21,8 +21,7 @@ def main():
 
     args = parse_args()
     print(args)
-    map = Map(args.map_size_x, args.map_size_y)
-    ui = UI(map)
+    ui = UI()
     ui.start()
 
 

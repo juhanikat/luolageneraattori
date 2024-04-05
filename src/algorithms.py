@@ -2,6 +2,11 @@ import math
 import random
 
 
+class BadTriangleError(Exception):
+    """Raised if a triangle constructor is given 3 points that cannot be made into a triangle.
+    """
+
+
 class Vertex:
     """This represents a node in the network."""
 
@@ -77,10 +82,9 @@ class Triangle:
             (edge2_length + edge0_length - edge1_length) *
             (edge0_length + edge1_length - edge2_length)))
         if divisor == 0:
-            print("Divisor in triangle is zero!")
-            print(self)
-            print(f"divisor: {divisor}")
-            exit()
+            raise BadTriangleError(
+                f"The vertices ({self.v0}), ({self.v1}), ({self.v2}) \
+                cannot be made into a triangle.")
         self.circumcircle_radius = (
             edge0_length * edge1_length * edge2_length) / divisor
 
