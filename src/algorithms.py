@@ -184,7 +184,6 @@ def bowyer_watson(x_y_coords: list) -> list:
     Returns:
         list: List of triangles that are in the valid Delaunay triangulation.
     """
-
     # converts x,y coordinate pairs into Vertices
     vertices = []
     for coord in x_y_coords:
@@ -236,6 +235,8 @@ def spanning_tree(edges: list) -> list:
     Returns:
         list: The edges that are in the spanning tree.
     """
+    if not edges:
+        return None
     next_to = {}
     for edge in edges:
         next_to[edge.id] = []

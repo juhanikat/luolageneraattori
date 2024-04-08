@@ -76,41 +76,13 @@ def debug_overlapping(new_room: Room, existing_room: Room, map_visual: list):
     print(map_visual)
 
 
-def display_rooms_and_triangles(triangles: list, rooms: list, map_size: tuple, circumcircles=False) -> None:
-    """Displays a figure showing the output of the program.
-
-    Args:
-        triangles (list): List of triangles.
-        rooms (list): List of rooms. These will be used to place Rectangles on the figure.
-        map_size (tuple): Map size in (x, y) coordinate format. Will be used to set the axis values.
-        circumcircles (bool, optional): Whether to draw circumcircles around triangles. Defaults to False.
-    """
-
-    _, axis = pyplot.subplots(1)
-    pyplot.gca().set_aspect('equal')
-    pyplot.xlim(-10, map_size[0] + 10)
-    pyplot.ylim(-10, map_size[1] + 10)
-    for room in rooms:
-        rectangle = Rectangle(room.bottom_left_coords,
-                              room.size_x, room.size_y, fc=(0, 0, 0, 0.1), ec=(0, 0, 0, 0.1))
-        axis.add_patch(rectangle)
-    pyplot.ion()
-
-    for triangle in triangles:
-        axis.plot([triangle.v0.x, triangle.v1.x, triangle.v2.x, triangle.v0.x],
-                  [triangle.v0.y, triangle.v1.y, triangle.v2.y, triangle.v0.y])
-        if circumcircles:
-            circumcircle = pyplot.Circle(
-                triangle.circumcenter, triangle.circumcircle_radius, color='r', fill=False, linestyle="dashed")
-            axis.add_artist(circumcircle)
-        pyplot.pause(0.2)
-    pyplot.ioff()
-    pyplot.show()
-
-
 def display_rooms_and_edges(edges: list, rooms: list, map_size: tuple) -> None:
-    _, axis = pyplot.subplots(1)
+    if not edges:
+        return None
+    _, axis = pyplot.subplots(1, ncols=1)
+    pyplot.grid(True, which="both", linestyle="--", alpha=0.5)
     pyplot.gca().set_aspect('equal')
+    pyplot.minorticks_on()
     pyplot.xlim(-10, map_size[0] + 10)
     pyplot.ylim(-10, map_size[1] + 10)
     for room in rooms:
@@ -123,6 +95,6 @@ def display_rooms_and_edges(edges: list, rooms: list, map_size: tuple) -> None:
         axis.plot([edge.v0.x, edge.v1.x],
                   [edge.v0.y, edge.v1.y])
 
-        pyplot.pause(0.2)
+        pyplot.pause(0.01)
     pyplot.ioff()
     pyplot.show()

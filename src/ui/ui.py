@@ -38,14 +38,18 @@ class UI:
                 amount=amount,
                 room_min_size=room_min_size,
                 room_max_size=room_max_size)
+            
         except ValueError as exception:
             self.error_message.config(
                 text=exception)
             return
-        except (RoomAmountError, RoomSizeError, RoomPlacementError) as exception:
+        except (ValueError, RoomAmountError, RoomSizeError, RoomPlacementError) as exception:
             self.error_message.config(text=exception)
             return
         edges = generate_dungeon(self.map)
+        if not edges:
+            self.error_message.config(text="Dungeon cannot be generated with these parameters, try increasing amount of rooms.")
+
         display_rooms_and_edges(
             edges, self.map.placed_rooms, self.map.get_size())
 

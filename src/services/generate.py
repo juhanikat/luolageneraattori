@@ -1,8 +1,10 @@
 import random
 
-from algorithms import bowyer_watson, spanning_tree
+from algorithms import Edge, Vertex, bowyer_watson, spanning_tree
 from entities.map import Map
 from utilities import convert_rooms_to_x_y_coords
+
+from .turn_edge_to_hallway import turn_edge_to_hallway
 
 
 def generate_dungeon(map: Map) -> list:
@@ -30,4 +32,5 @@ def generate_dungeon(map: Map) -> list:
         if random.randint(1, 10) == 10 and edge not in result:
             # 10% chance to add removed edge back into the result
             result.append(edge)
+    print(turn_edge_to_hallway(Edge(Vertex(0, 0), Vertex(8, 7))))
     return result
