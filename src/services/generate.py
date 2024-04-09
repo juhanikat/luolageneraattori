@@ -4,7 +4,7 @@ from algorithms import Edge, Vertex, bowyer_watson, spanning_tree
 from entities.map import Map
 from utilities import convert_rooms_to_x_y_coords
 
-from .turn_edge_to_hallway import turn_edge_to_hallway
+from .turn_edge_to_hallway import NoLengthError, turn_edge_to_hallway
 
 
 def generate_dungeon(map: Map) -> list:
@@ -18,7 +18,7 @@ def generate_dungeon(map: Map) -> list:
         map (Map): A Map object containing the rooms.
 
     Returns:
-        list: The edges that make up the path.
+        list: The edges that make up the path, converted into squares.
     """
     x_y_coords = convert_rooms_to_x_y_coords(map.placed_rooms)
     triangles = bowyer_watson(x_y_coords)
@@ -31,6 +31,13 @@ def generate_dungeon(map: Map) -> list:
     for edge in edges:
         if random.randint(1, 10) == 10 and edge not in result:
             # 10% chance to add removed edge back into the result
-            result.append(edge)
-    print(turn_edge_to_hallway(Edge(Vertex(0, 0), Vertex(8, 7))))
-    return result
+            #result.append(edge)
+            pass
+    converted_edges = []
+    for edge in result:
+        try:
+            converted_edge = turn_edge_to_hallway(edge)
+            converted_edges.append(converted_edge)
+        except NoLengthError as exception:
+            print(exception)
+    return converted_edges

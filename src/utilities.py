@@ -54,28 +54,6 @@ def convert_rooms_to_x_y_coords(rooms: list) -> list:
     return coords
 
 
-def debug_overlapping(new_room: Room, existing_room: Room, map_visual: list):
-    """Used to show visually how two rooms overlap.
-
-    Args:
-        new_room (Room): The room that was placed to cause the overlap.
-        existing_room (Room): The room that was already on the map.
-        map_visual (list): Visual representation of the map.
-    """
-    print(
-        f"new room: {new_room}")
-    print(
-        f"conflicting room: {existing_room}")
-    for coord in existing_room.get_all_coords():
-        map_visual[coord[0]][coord[1]] = "O"
-    for coord in new_room.get_all_coords():
-        if existing_room.covers(coord):
-            map_visual[coord[0]][coord[1]] = "!"
-        else:
-            map_visual[coord[0]][coord[1]] = "N"
-    print(map_visual)
-
-
 def display_rooms_and_edges(edges: list, rooms: list, map_size: tuple) -> None:
     if not edges:
         return None
@@ -92,8 +70,14 @@ def display_rooms_and_edges(edges: list, rooms: list, map_size: tuple) -> None:
     pyplot.ion()
 
     for edge in edges:
-        axis.plot([edge.v0.x, edge.v1.x],
-                  [edge.v0.y, edge.v1.y])
+        """
+        print(edge)
+        pyplot.plot((edge.v0.x, edge.v1.x), (edge.v0.y, edge.v1.y))
+        continue
+    """
+        for coord in edge:
+            square = Rectangle(coord, 1, 1, fc=(0, 1, 0, 0.5))
+            axis.add_patch(square)
 
         pyplot.pause(0.01)
     pyplot.ioff()
