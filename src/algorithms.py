@@ -1,4 +1,6 @@
+from entities.cell import Cell
 from entities.geometry import Edge, Triangle, Vertex
+from entities.map import Map
 
 
 def get_unique_edges(edges: list) -> list:
@@ -130,3 +132,80 @@ def spanning_tree(edges: list) -> list:
                     or edge.v1 == edge2.v1:
                 next_to[edge.id].append(edge2)
     return search(edges[0], [], next_to, [])
+
+
+class BellmanFord:
+    """Bellman-Ford algorithm, copied from TIRA 2024 material with some changes.
+    """
+
+    def __init__(self, map: Map):
+        self.cells = map.cells.values()
+        self.edges = []
+        for cell in self.cells:
+            try:
+                self.add_edge(
+                    cell, map.cells[(cell.coords[0], cell.coords[1] + 1)])
+                self.add_edge(
+                    cell, map.cells[(cell.coords[0] + 1, cell.coords[1])])
+                self.add_edge(
+                    cell, map.cells[(cell.coords[0], cell.coords[1] - 1)])
+                self.add_edge(
+                    cell, map.cells[(cell.coords[0] - 1, cell.coords[1])])
+            except KeyError:
+                pass
+
+    def add_edge(self, cell1: Cell, cell2: Cell):
+        self.edges.append((cell1, cell2, cell1.weight + cell2.weight))
+
+    def find_distances(self, start_cell):
+        distances = {}
+        for cell in self.cells:
+            distances[cell] = float("inf")
+        distances[start_cell] = 0
+
+        num_rounds = len(self.cells) - 1
+        for _ in range(num_rounds):
+            for edge in self.edges:
+                cell1, cell2, weight = edge
+                new_distance = distances[cell1] + weight
+                if new_distance < distances[cell2]:
+                    distances[cell2] = new_distance
+
+        return distances
+
+    def shortest_path(self, start_cell, end_cell) -> list:
+        """Calculates the shortest path between start_cell and end_cell. Going through rooms is expensive, and going through existing hallways is cheap.
+
+        Args:
+            start_cell (_type_): The cell where the algorithm starts.
+            end_cell (_type_): The cell where the algorithm ends.
+
+        Returns:
+            list: A list of coordinate tuples that is the shortest path between the 2 cells.
+        """
+        distances = {}
+        for cell in self.cells:
+            distances[cell] = float("inf")
+        distances[start_cell] = 0
+        previous = {}
+        previous[start_cell] = None
+
+        for _ in range(len(self.cells) - 1):
+            for edge in self.edges:
+                cell1, cell2, weight = edge
+                new_distance = distances[cell1] + weight
+                if new_distance < distances[cell2]:
+                    distances[cell2] = new_distance
+                    previous[cell2] = cell1
+
+        if distances[end_cell] == float("inf"):
+            return None
+
+        path = []
+        cell = end_cell
+        while cell:
+            path.append(cell.coords)
+            cell = previous[cell]
+
+        path.reverse()
+        return path

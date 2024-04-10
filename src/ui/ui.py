@@ -1,3 +1,4 @@
+import time
 import tkinter as tk
 
 from matplotlib import pyplot
@@ -108,6 +109,7 @@ class UI:
 
 
 def display_map(map: Map):
+    start = time.time()
     _, axis = pyplot.subplots(1, ncols=1)
     pyplot.grid(True, which="both", linestyle="--", alpha=0.5)
     pyplot.gca().set_aspect('equal')
@@ -124,5 +126,7 @@ def display_map(map: Map):
         for coord in hallway.coords:
             square = Rectangle(coord, 1, 1, fc=(0, 1, 0, 0.5))
             axis.add_patch(square)
-
+    axis.add_patch(Rectangle((0, 0), map.get_size()[
+                   0], map.get_size()[1], alpha=1, fill=True, edgecolor=(1, 0, 1, 0.6), facecolor="none"))
+    print(f"drawing figure: {time.time() - start:.03f}")
     pyplot.show()

@@ -1,6 +1,7 @@
 import random
 
-from services.turn_edge_to_hallway import Hallway
+from entities.cell import Cell
+from entities.hallway import Hallway
 
 from .room import Room
 
@@ -20,13 +21,15 @@ class RoomAmountError(Exception):
     """
 
 
-class Map():
+class Map:
     """A class that holds all placed rooms.
     """
 
     def __init__(self, size_x, size_y) -> None:
         self.size_x = size_x
         self.size_y = size_y
+        self.cells = {(x, y): Cell(x, y, 1)
+                      for x in range(size_x) for y in range(size_y)}
         self.placed_rooms = []
         self.added_hallways = []
 
@@ -143,12 +146,19 @@ class Map():
             placed = self.place_new_room(created_rooms[index], overlap=overlap)
             if placed:
                 self.placed_rooms.append(placed)
+                for coord in placed.get_all_coords():
+                    self.cells[coord] = Cell(coord[0], coord[1], 10)
                 index += 1
                 if index == len(created_rooms):
                     break
 
     def add_hallway(self, hallway: Hallway):
         self.added_hallways.append(hallway)
+        for coord in hallway.coords:
+            self.cells[coord] = Cell(coord[0], coord[1], 0.5)
+
+    def get_cell(self, coord: tuple) -> Cell:
+        return self.cells[coord]
 
     def check_hallway_overlap(self, hallway1: Hallway, hallway2: Hallway):
         for coord in hallway1.coords:

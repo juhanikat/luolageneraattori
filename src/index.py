@@ -1,6 +1,5 @@
 import argparse
 
-from entities.map import Map
 from ui.ui import UI
 
 
@@ -20,7 +19,6 @@ def main():
         return args
 
     args = parse_args()
-    print(args)
     ui = UI()
     ui.start()
 
