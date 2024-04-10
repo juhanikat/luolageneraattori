@@ -30,7 +30,7 @@ def lint(ctx):
 
 @task
 def test(ctx):
-    ctx.run("poetry run pytest -v", pty=True)
+    ctx.run("poetry run pytest -vv", pty=True)
 
 
 @task

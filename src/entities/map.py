@@ -1,5 +1,7 @@
 import random
 
+from services.turn_edge_to_hallway import Hallway
+
 from .room import Room
 
 
@@ -26,6 +28,7 @@ class Map():
         self.size_x = size_x
         self.size_y = size_y
         self.placed_rooms = []
+        self.added_hallways = []
 
     def get_size(self) -> tuple:
         """Returns a tuple containing the width and length of the map.
@@ -121,7 +124,7 @@ class Map():
             room_exact_size=room_exact_size)
         while True:
             tries += 1
-            if tries >= 1000:
+            if tries >= 500:
                 print(
                     f"Tried to place room {tries} times, removing all rooms to try again.")
                 self.placed_rooms.clear()
@@ -132,7 +135,7 @@ class Map():
                     room_exact_size=room_exact_size)
                 tries = 0
                 strikes += 1
-                if strikes == 10:
+                if strikes == 5:
                     raise RoomPlacementError(
                         "Rooms cannot be placed in reasonable time, they are likely too large to fit the map.")
                 index = 0
@@ -143,6 +146,15 @@ class Map():
                 index += 1
                 if index == len(created_rooms):
                     break
+
+    def add_hallway(self, hallway: Hallway):
+        self.added_hallways.append(hallway)
+
+    def check_hallway_overlap(self, hallway1: Hallway, hallway2: Hallway):
+        for coord in hallway1.coords:
+            if coord in hallway2.coords:
+                return True
+        return False
 
     def __str__(self) -> str:
         representation = f"\n Map size: Y{self.size_y} * X{self.size_x} \n"

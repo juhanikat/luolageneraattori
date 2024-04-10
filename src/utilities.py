@@ -1,6 +1,7 @@
 from matplotlib import pyplot
 from matplotlib.patches import Rectangle
 
+from entities.map import Map
 from entities.room import Room
 
 
@@ -54,6 +55,28 @@ def convert_rooms_to_x_y_coords(rooms: list) -> list:
     return coords
 
 
+def display_map(map: Map):
+    _, axis = pyplot.subplots(1, ncols=1)
+    pyplot.grid(True, which="both", linestyle="--", alpha=0.5)
+    pyplot.gca().set_aspect('equal')
+    pyplot.minorticks_on()
+    pyplot.xlim(-10, map.get_size()[0] + 10)
+    pyplot.ylim(-10, map.get_size()[1] + 10)
+
+    room: Room
+    for room in map.placed_rooms:
+        rectangle = Rectangle(room.bottom_left_coords,
+                              room.size_x, room.size_y, fc=(0, 0, 0, 0.1), ec=(0, 0, 0, 0.1))
+        axis.add_patch(rectangle)
+    for hallway in map.added_hallways:
+        for coord in hallway.coords:
+            square = Rectangle(coord, 1, 1, fc=(0, 1, 0, 0.5))
+            axis.add_patch(square)
+            
+    pyplot.show()
+
+
+"""
 def display_rooms_and_edges(edges: list, rooms: list, map_size: tuple) -> None:
     if not edges:
         return None
@@ -70,11 +93,6 @@ def display_rooms_and_edges(edges: list, rooms: list, map_size: tuple) -> None:
     pyplot.ion()
 
     for edge in edges:
-        """
-        print(edge)
-        pyplot.plot((edge.v0.x, edge.v1.x), (edge.v0.y, edge.v1.y))
-        continue
-    """
         for coord in edge:
             square = Rectangle(coord, 1, 1, fc=(0, 1, 0, 0.5))
             axis.add_patch(square)
@@ -82,3 +100,4 @@ def display_rooms_and_edges(edges: list, rooms: list, map_size: tuple) -> None:
         pyplot.pause(0.01)
     pyplot.ioff()
     pyplot.show()
+"""

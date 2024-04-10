@@ -13,12 +13,14 @@ def generate_dungeon(map: Map) -> list:
     1. Creating a delaunay triangulation using the rooms on the map, \n
     2. Creating a spanning tree from the triangulation, removing unnecessary edges, 
     3. Randomly adding some removed edges back into the spanning tree, to make the resulting hallways look more natural.
+    4. Converting the edges into hallways.
+    5. Adding these hallways to the map object.
 
     Args:
         map (Map): A Map object containing the rooms.
 
     Returns:
-        list: The edges that make up the path, converted into squares.
+        list: The hallways that make up the path.
     """
     x_y_coords = convert_rooms_to_x_y_coords(map.placed_rooms)
     triangles = bowyer_watson(x_y_coords)
@@ -31,13 +33,15 @@ def generate_dungeon(map: Map) -> list:
     for edge in edges:
         if random.randint(1, 10) == 10 and edge not in result:
             # 10% chance to add removed edge back into the result
-            #result.append(edge)
+            # result.append(edge)
             pass
-    converted_edges = []
+    hallways = []
     for edge in result:
         try:
-            converted_edge = turn_edge_to_hallway(edge)
-            converted_edges.append(converted_edge)
+            hallway = turn_edge_to_hallway(edge)
+            hallways.append(hallway)
         except NoLengthError as exception:
             print(exception)
-    return converted_edges
+    for hallway in hallways:
+        map.add_hallway(hallway)
+    return hallways

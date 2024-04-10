@@ -1,6 +1,5 @@
-from itertools import zip_longest
-
 from algorithms import Edge
+from entities.hallway import Hallway
 
 
 class NoLengthError(Exception):
@@ -47,4 +46,4 @@ def turn_edge_to_hallway(edge: Edge) -> list:
         if ix == len(x_coords) - 1 and iy == len(y_coords) - 1:
             break
 
-    return result
+    return Hallway(result)

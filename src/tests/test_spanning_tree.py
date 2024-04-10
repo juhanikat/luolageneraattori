@@ -1,4 +1,5 @@
-from algorithms import Edge, Vertex, spanning_tree
+from algorithms import spanning_tree
+from entities.geometry import Edge, Vertex
 
 
 def test_triangle_turns_into_2_edges():

@@ -1,9 +1,13 @@
 import tkinter as tk
 
+from matplotlib import pyplot
+from matplotlib.patches import Rectangle
+
 from entities.map import (Map, RoomAmountError, RoomPlacementError,
                           RoomSizeError)
+from entities.room import Room
 from services.generate import generate_dungeon
-from utilities import DEFAULT_ARGS, display_rooms_and_edges, validate_int
+from utilities import DEFAULT_ARGS, validate_int
 
 
 class UI:
@@ -38,7 +42,7 @@ class UI:
                 amount=amount,
                 room_min_size=room_min_size,
                 room_max_size=room_max_size)
-            
+
         except ValueError as exception:
             self.error_message.config(
                 text=exception)
@@ -48,10 +52,10 @@ class UI:
             return
         edges = generate_dungeon(self.map)
         if not edges:
-            self.error_message.config(text="Dungeon cannot be generated with these parameters, try increasing amount of rooms.")
+            self.error_message.config(
+                text="Dungeon cannot be generated with these parameters, try increasing amount of rooms.")
 
-        display_rooms_and_edges(
-            edges, self.map.placed_rooms, self.map.get_size())
+        display_map(self.map)
 
     def create_ui(self):
         amount = tk.StringVar(self.root)
@@ -101,3 +105,24 @@ class UI:
 
     def start(self):
         self.root.mainloop()
+
+
+def display_map(map: Map):
+    _, axis = pyplot.subplots(1, ncols=1)
+    pyplot.grid(True, which="both", linestyle="--", alpha=0.5)
+    pyplot.gca().set_aspect('equal')
+    pyplot.minorticks_on()
+    pyplot.xlim(-10, map.get_size()[0] + 10)
+    pyplot.ylim(-10, map.get_size()[1] + 10)
+
+    room: Room
+    for room in map.placed_rooms:
+        rectangle = Rectangle(room.bottom_left_coords,
+                              room.size_x, room.size_y, fc=(0, 0, 0, 0.1), ec=(0, 0, 0, 0.1))
+        axis.add_patch(rectangle)
+    for hallway in map.added_hallways:
+        for coord in hallway.coords:
+            square = Rectangle(coord, 1, 1, fc=(0, 1, 0, 0.5))
+            axis.add_patch(square)
+
+    pyplot.show()
