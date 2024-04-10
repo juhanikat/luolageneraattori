@@ -1,3 +1,5 @@
+import heapq
+
 from entities.cell import Cell
 from entities.geometry import Edge, Triangle, Vertex
 from entities.map import Map
@@ -197,6 +199,94 @@ class BellmanFord:
                 if new_distance < distances[cell2]:
                     distances[cell2] = new_distance
                     previous[cell2] = cell1
+
+        if distances[end_cell] == float("inf"):
+            return None
+
+        path = []
+        cell = end_cell
+        while cell:
+            path.append(cell.coords)
+            cell = previous[cell]
+
+        path.reverse()
+        return path
+
+
+class Dijkstra:
+    """_summary_
+    """
+
+    def __init__(self, map: Map):
+        self.cells = map.cells.values()
+        self.graph = {cell: [] for cell in self.cells}
+        for cell in self.cells:
+            try:
+                self.add_edge(
+                    cell, map.cells[(cell.coords[0], cell.coords[1] + 1)])
+                self.add_edge(
+                    cell, map.cells[(cell.coords[0] + 1, cell.coords[1])])
+                self.add_edge(
+                    cell, map.cells[(cell.coords[0], cell.coords[1] - 1)])
+                self.add_edge(
+                    cell, map.cells[(cell.coords[0] - 1, cell.coords[1])])
+            except KeyError:
+                pass
+
+    def add_edge(self, cell1: Cell, cell2: Cell):
+        self.graph[cell1].append((cell2, cell1.weight + cell2.weight))
+
+    def find_distances(self, start_cell):
+        distances = {}
+        for cell in self.cells:
+            distances[cell] = float("inf")
+        distances[start_cell] = 0
+
+        queue = []
+        heapq.heappush(queue, (0, start_cell))
+
+        visited = set()
+        while queue:
+            print(distances)
+            cell_a = heapq.heappop(queue)[1]
+            if cell_a in visited:
+                continue
+            visited.add(cell_a)
+
+            for cell_b, weight in self.graph[cell_a]:
+                new_distance = distances[cell_a] + weight
+                if new_distance < distances[cell_b]:
+                    distances[cell_b] = new_distance
+                    new_pair = (new_distance, cell_b)
+                    heapq.heappush(queue, new_pair)
+
+        return distances
+
+    def shortest_path(self, start_cell, end_cell):
+        distances = {}
+        for cell in self.cells:
+            distances[cell] = float("inf")
+        distances[start_cell] = 0
+        previous = {}
+        previous[start_cell] = None
+
+        queue = []
+        heapq.heappush(queue, (0, start_cell))
+
+        visited = set()
+        while queue:
+            cell_a = heapq.heappop(queue)[1]
+            if cell_a in visited:
+                continue
+            visited.add(cell_a)
+
+            for cell_b, weight in self.graph[cell_a]:
+                new_distance = distances[cell_a] + weight
+                if new_distance < distances[cell_b]:
+                    distances[cell_b] = new_distance
+                    previous[cell_b] = cell_a
+                    new_pair = (new_distance, cell_b)
+                    heapq.heappush(queue, new_pair)
 
         if distances[end_cell] == float("inf"):
             return None

@@ -6,3 +6,6 @@ class Cell:
 
     def __repr__(self) -> str:
         return f"coords: {self.coords} weight: {self.weight}"
+
+    def __lt__(self, other):
+        return self.weight < other.weight

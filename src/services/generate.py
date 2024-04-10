@@ -1,12 +1,11 @@
 import random
 import time
 
-from algorithms import BellmanFord, Edge, Vertex, bowyer_watson, spanning_tree
+from algorithms import (BellmanFord, Dijkstra, Edge, bowyer_watson,
+                        spanning_tree)
 from entities.hallway import Hallway
 from entities.map import Map
 from utilities import convert_rooms_to_x_y_coords
-
-from .turn_edge_to_hallway import NoLengthError, turn_edge_to_hallway
 
 
 def generate_dungeon(map: Map) -> list:
@@ -44,7 +43,8 @@ def generate_dungeon(map: Map) -> list:
             # result.append(edge)
             pass
     hallways = []
-    b = BellmanFord(map)
+    # b = BellmanFord(map)
+    d = Dijkstra(map)
     hallway: Hallway
     edge: Edge
     random.shuffle(result)
@@ -61,7 +61,7 @@ def generate_dungeon(map: Map) -> list:
         map.add_hallway(hallway)
         """
 
-        hallway = Hallway(b.shortest_path(
+        hallway = Hallway(d.shortest_path(
             map.cells[(edge.v0.x, edge.v0.y)], map.cells[(edge.v1.x, edge.v1.y)]))
         hallways.append(hallway)
     print(f"calculating shortest paths: {time.time()-start:.03f}")
