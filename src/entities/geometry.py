@@ -23,7 +23,8 @@ class Vertex:
 
 
 class Edge:
-    """This represents a line in the network that connects two vertices together.
+    """This represents a line that connects two vertices together.
+    Two edges are equal if they share the same 2 vertices.
 
         Attributes:
             v0 (Vertex): First vertex.
@@ -52,11 +53,7 @@ class Edge:
 
 
 class Triangle:
-    """A triangle between 3 vertices.
-
-        Attributes:
-            lots
-    """
+    # TODO
 
     def __init__(self, v0: Vertex, v1: Vertex, v2: Vertex) -> None:
         """A triangle between 3 vertices.
@@ -65,10 +62,18 @@ class Triangle:
             v0 (Vertex): First vertex.
             v1 (Vertex): Second vertex.
             v2 (Vertex): Third vertex.
+
+        Raises:
+            BadTriangleError: Raised if all vertices have the same x- or y-coordinate, because a triangle cannot be formed then.
         """
         self.v0 = v0
         self.v1 = v1
         self.v2 = v2
+
+        if (v0.x == v1.x == v2.x) or (v0.y == v1.y == v2.y):
+            raise BadTriangleError(
+                f"The vertices ({v0}), ({v1}), ({v2}) \
+                cannot be made into a triangle, because they all have the same x- or y-coordinates.")
         self.edge0 = Edge(v0, v1)
         self.edge1 = Edge(v1, v2)
         self.edge2 = Edge(v2, v0)
@@ -78,19 +83,37 @@ class Triangle:
 
         self.circumcenter = self.calculate_circumcenter(v0, v1, v2)
 
-    def calculate_circumcircle_radius(self, edge0: Edge, edge1: Edge, edge2: Edge):
+    def calculate_circumcircle_radius(self, edge0: Edge, edge1: Edge, edge2: Edge) -> float:
+        """Calculates the radius of the circumcircle of the triangle. 
+        A circumcircle is a circle drawn through the 3 vertices of the triangle.
+
+        Args:
+            edge0 (Edge): First edge of triangle.
+            edge1 (Edge): Second edge of triangle.
+            edge2 (Edge): Third edge of triangle.
+
+        Returns:
+            float: The radius of the circumcircle.
+        """
         divisor = (math.sqrt(
             (edge0.length + edge1.length + edge2.length) *
             (edge1.length + edge2.length - edge0.length) *
             (edge2.length + edge0.length - edge1.length) *
             (edge0.length + edge1.length - edge2.length)))
-        if divisor == 0:
-            raise BadTriangleError(
-                f"The vertices ({edge0}), ({edge1}), ({edge2}) \
-                cannot be made into a triangle.")
         return (edge0.length * edge1.length * edge2.length) / divisor
 
-    def calculate_circumcenter(self, v0: Vertex, v1: Vertex, v2: Vertex):
+    def calculate_circumcenter(self, v0: Vertex, v1: Vertex, v2: Vertex) -> tuple:
+        """Calculates the circumcenter of the triangle's circumcircle.
+        A circumcircle is a circle drawn through the 3 vertices of the triangle.
+
+        Args:
+            v0 (Vertex): First vertex of triangle.
+            v1 (Vertex): Second vertex of triangle.
+            v2 (Vertex): Third vertex of triangle.
+
+        Returns:
+            tuple: The coordinates of the circumcenter in (x, y) format.
+        """
         ax = v0.x
         ay = v0.y
         bx = v1.x
@@ -104,7 +127,7 @@ class Triangle:
               * (ax - cx) + (cx * cx + cy * cy) * (bx - ax)) / d
         return (ux, uy)
 
-    def vertex_in_circumcirc(self, vertex: Vertex) -> bool:
+    def vertex_in_circumcircle(self, vertex: Vertex) -> bool:
         """Checks if a given vertex is in the circumcircle of this triangle.
 
         Args:

@@ -17,13 +17,18 @@ class UI:
         self.map = Map(20, 20)
         self.root = tk.Tk()
         self.error_message = None
+        self.run_button_text = tk.StringVar()
         self.create_ui()
+
+    def change_run_button_text(self, text: str):
+        self.run_button_text.set(text)
 
     def handle_button_click(self, amount,
                             room_min_size,
                             room_max_size,
                             map_size_x,
                             map_size_y):
+
         if room_min_size.strip() == "":
             room_min_size = DEFAULT_ARGS["room_min_size"]
         if room_max_size.strip() == "":
@@ -38,6 +43,8 @@ class UI:
             room_max_size = validate_int("Maximum room size", room_max_size)
             map_size_x = validate_int("Map size x", map_size_x)
             map_size_y = validate_int("Map size y", map_size_y)
+            self.change_run_button_text("Loading...")
+            self.root.update_idletasks()
             self.map = Map(map_size_x, map_size_y)
             self.map.place_rooms(
                 amount=amount,
@@ -50,13 +57,17 @@ class UI:
             return
         except (ValueError, RoomAmountError, RoomSizeError, RoomPlacementError) as exception:
             self.error_message.config(text=exception)
+            self.change_run_button_text("Run")
             return
         edges = generate_dungeon(self.map)
         if not edges:
             self.error_message.config(
                 text="Dungeon cannot be generated with these parameters, try increasing amount of rooms.")
+            self.change_run_button_text("Run")
+            return
 
         display_map(self.map)
+        self.change_run_button_text("Run")
 
     def create_ui(self):
         amount = tk.StringVar(self.root)
@@ -65,7 +76,15 @@ class UI:
         map_size_x = tk.StringVar(self.root)
         map_size_y = tk.StringVar(self.root)
 
+        self.change_run_button_text("Run")
         self.error_message = tk.Label(self.root, text="")
+        self.run_button = tk.Button(self.root, textvariable=self.run_button_text,
+                                    command=lambda: self.handle_button_click(
+                                        amount.get(),
+                                        room_min_size.get(),
+                                        room_max_size.get(),
+                                        map_size_x.get(),
+                                        map_size_y.get()))
 
         amount_label = tk.Label(self.root, text="Amount of rooms")
         room_min_size_label = tk.Label(
@@ -95,14 +114,7 @@ class UI:
         map_size_y_label.pack()
         map_size_y_entry.pack()
 
-        button = tk.Button(self.root, text="Run",
-                           command=lambda: self.handle_button_click(
-                               amount.get(),
-                               room_min_size.get(),
-                               room_max_size.get(),
-                               map_size_x.get(),
-                               map_size_y.get()))
-        button.pack()
+        self.run_button.pack()
 
     def start(self):
         self.root.mainloop()
@@ -114,8 +126,8 @@ def display_map(map: Map):
     pyplot.grid(True, which="both", linestyle="--", alpha=0.5)
     pyplot.gca().set_aspect('equal')
     pyplot.minorticks_on()
-    pyplot.xlim(-10, map.get_size()[0] + 10)
-    pyplot.ylim(-10, map.get_size()[1] + 10)
+    pyplot.xlim(0, map.get_size()[0])
+    pyplot.ylim(0, map.get_size()[1])
 
     room: Room
     for room in map.placed_rooms:

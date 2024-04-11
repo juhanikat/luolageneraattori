@@ -1,4 +1,5 @@
 import heapq
+import random
 
 from entities.cell import Cell
 from entities.geometry import Edge, Triangle, Vertex
@@ -7,6 +8,7 @@ from entities.map import Map
 
 def get_unique_edges(edges: list) -> list:
     """Takes a list of edges and filters out non-unique ones.
+    Edges that share the same 2 vertices are not unique.
 
     Args:
         edges (list): The list of edges to filter.
@@ -44,7 +46,7 @@ def add_vertex_and_update(vertex: Vertex, triangles: list) -> list:
 
     triangle: Triangle
     for triangle in triangles:
-        if triangle.vertex_in_circumcirc(vertex):
+        if triangle.vertex_in_circumcircle(vertex):
             edges.append(triangle.edge0)
             edges.append(triangle.edge1)
             edges.append(triangle.edge2)
@@ -63,7 +65,7 @@ def bowyer_watson(x_y_coords: list) -> list:
     """An implementation of the Bowyer-Watson algorithm.
 
     Args:
-        vertices (list): List of (x, y) coordinates (representing rooms) 
+        vertices (list): List of (x, y) coordinates (representing rooms)
         that are added to the triangulation.
 
     Returns:
@@ -136,166 +138,66 @@ def spanning_tree(edges: list) -> list:
     return search(edges[0], [], next_to, [])
 
 
-class BellmanFord:
-    """Bellman-Ford algorithm, copied from TIRA 2024 material with some changes.
+def shortest_path_dijkstra(map: Map, start_cell: Cell, end_cell: Cell) -> list:
+    """Copied from TIRA 2024 course material with some changes. \n
+    Calculates the shortest path between start_cell and end_cell. Going through rooms is expensive, and going through existing hallways is cheap.
+
+    Args:
+        start_cell (_type_): The cell where the algorithm starts.
+        end_cell (_type_): The cell where the algorithm ends.
+
+    Returns:
+        list: A list of coordinate tuples that is the shortest path between the 2 cells.
     """
+    cells = map.cells.values()
+    distances = {}
+    for cell in cells:
+        distances[cell] = float("inf")
 
-    def __init__(self, map: Map):
-        self.cells = map.cells.values()
-        self.edges = []
-        for cell in self.cells:
-            try:
-                self.add_edge(
-                    cell, map.cells[(cell.coords[0], cell.coords[1] + 1)])
-                self.add_edge(
-                    cell, map.cells[(cell.coords[0] + 1, cell.coords[1])])
-                self.add_edge(
-                    cell, map.cells[(cell.coords[0], cell.coords[1] - 1)])
-                self.add_edge(
-                    cell, map.cells[(cell.coords[0] - 1, cell.coords[1])])
-            except KeyError:
-                pass
+    distances[start_cell] = 0
+    previous = {}
+    previous[start_cell] = None
 
-    def add_edge(self, cell1: Cell, cell2: Cell):
-        self.edges.append((cell1, cell2, cell1.weight + cell2.weight))
+    queue = []
+    heapq.heappush(queue, (0, start_cell))
 
-    def find_distances(self, start_cell):
-        distances = {}
-        for cell in self.cells:
-            distances[cell] = float("inf")
-        distances[start_cell] = 0
+    visited = set()
+    while queue:
+        cell1 = heapq.heappop(queue)[1]
+        if cell1 in visited:
+            continue
+        visited.add(cell1)
 
-        num_rounds = len(self.cells) - 1
-        for _ in range(num_rounds):
-            for edge in self.edges:
-                cell1, cell2, weight = edge
-                new_distance = distances[cell1] + weight
-                if new_distance < distances[cell2]:
-                    distances[cell2] = new_distance
+        neighbor1 = map.get_cell((cell1.coords[0], cell1.coords[1] + 1))
+        neighbor2 = map.get_cell(
+            (cell1.coords[0], cell1.coords[1] - 1))
+        neighbor3 = map.get_cell(
+            (cell1.coords[0] + 1, cell1.coords[1]))
+        neighbor4 = map.get_cell(
+            (cell1.coords[0] - 1, cell1.coords[1]))
+        neighbors = [neighbor1, neighbor2, neighbor3, neighbor4]
+        # possibly makes hallway generation more natural
+        random.shuffle(neighbors)
 
-        return distances
-
-    def shortest_path(self, start_cell, end_cell) -> list:
-        """Calculates the shortest path between start_cell and end_cell. Going through rooms is expensive, and going through existing hallways is cheap.
-
-        Args:
-            start_cell (_type_): The cell where the algorithm starts.
-            end_cell (_type_): The cell where the algorithm ends.
-
-        Returns:
-            list: A list of coordinate tuples that is the shortest path between the 2 cells.
-        """
-        distances = {}
-        for cell in self.cells:
-            distances[cell] = float("inf")
-        distances[start_cell] = 0
-        previous = {}
-        previous[start_cell] = None
-
-        for _ in range(len(self.cells) - 1):
-            for edge in self.edges:
-                cell1, cell2, weight = edge
-                new_distance = distances[cell1] + weight
-                if new_distance < distances[cell2]:
-                    distances[cell2] = new_distance
-                    previous[cell2] = cell1
-
-        if distances[end_cell] == float("inf"):
-            return None
-
-        path = []
-        cell = end_cell
-        while cell:
-            path.append(cell.coords)
-            cell = previous[cell]
-
-        path.reverse()
-        return path
-
-
-class Dijkstra:
-    """_summary_
-    """
-
-    def __init__(self, map: Map):
-        self.cells = map.cells.values()
-        self.graph = {cell: [] for cell in self.cells}
-        for cell in self.cells:
-            try:
-                self.add_edge(
-                    cell, map.cells[(cell.coords[0], cell.coords[1] + 1)])
-                self.add_edge(
-                    cell, map.cells[(cell.coords[0] + 1, cell.coords[1])])
-                self.add_edge(
-                    cell, map.cells[(cell.coords[0], cell.coords[1] - 1)])
-                self.add_edge(
-                    cell, map.cells[(cell.coords[0] - 1, cell.coords[1])])
-            except KeyError:
-                pass
-
-    def add_edge(self, cell1: Cell, cell2: Cell):
-        self.graph[cell1].append((cell2, cell1.weight + cell2.weight))
-
-    def find_distances(self, start_cell):
-        distances = {}
-        for cell in self.cells:
-            distances[cell] = float("inf")
-        distances[start_cell] = 0
-
-        queue = []
-        heapq.heappush(queue, (0, start_cell))
-
-        visited = set()
-        while queue:
-            print(distances)
-            cell_a = heapq.heappop(queue)[1]
-            if cell_a in visited:
+        for cell2 in neighbors:
+            if cell2 is None:
                 continue
-            visited.add(cell_a)
+            weight = cell2.weight
+            new_distance = distances[cell1] + weight
+            if new_distance < distances[cell2]:
+                distances[cell2] = new_distance
+                previous[cell2] = cell1
+                new_pair = (new_distance, cell2)
+                heapq.heappush(queue, new_pair)
 
-            for cell_b, weight in self.graph[cell_a]:
-                new_distance = distances[cell_a] + weight
-                if new_distance < distances[cell_b]:
-                    distances[cell_b] = new_distance
-                    new_pair = (new_distance, cell_b)
-                    heapq.heappush(queue, new_pair)
+    if distances[end_cell] == float("inf"):
+        return None
 
-        return distances
+    path = []
+    cell = end_cell
+    while cell:
+        path.append(cell.coords)
+        cell = previous[cell]
 
-    def shortest_path(self, start_cell, end_cell):
-        distances = {}
-        for cell in self.cells:
-            distances[cell] = float("inf")
-        distances[start_cell] = 0
-        previous = {}
-        previous[start_cell] = None
-
-        queue = []
-        heapq.heappush(queue, (0, start_cell))
-
-        visited = set()
-        while queue:
-            cell_a = heapq.heappop(queue)[1]
-            if cell_a in visited:
-                continue
-            visited.add(cell_a)
-
-            for cell_b, weight in self.graph[cell_a]:
-                new_distance = distances[cell_a] + weight
-                if new_distance < distances[cell_b]:
-                    distances[cell_b] = new_distance
-                    previous[cell_b] = cell_a
-                    new_pair = (new_distance, cell_b)
-                    heapq.heappush(queue, new_pair)
-
-        if distances[end_cell] == float("inf"):
-            return None
-
-        path = []
-        cell = end_cell
-        while cell:
-            path.append(cell.coords)
-            cell = previous[cell]
-
-        path.reverse()
-        return path
+    path.reverse()
+    return path

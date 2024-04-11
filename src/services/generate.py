@@ -1,7 +1,7 @@
 import random
 import time
 
-from algorithms import (BellmanFord, Dijkstra, Edge, bowyer_watson,
+from algorithms import (Edge, bowyer_watson, shortest_path_dijkstra,
                         spanning_tree)
 from entities.hallway import Hallway
 from entities.map import Map
@@ -38,35 +38,23 @@ def generate_dungeon(map: Map) -> list:
     result = spanning_tree(edges)
     print(f"spanning tree: {time.time()-start:.03f}")
     for edge in edges:
-        if random.randint(1, 10) == 10 and edge not in result:
+        if random.randint(1, 10) == 1 and edge not in result:
             # 10% chance to add removed edge back into the result
-            # result.append(edge)
-            pass
-    hallways = []
-    # b = BellmanFord(map)
-    d = Dijkstra(map)
+            result.append(edge)
     hallway: Hallway
     edge: Edge
     random.shuffle(result)
+    added_hallways = []
     start = time.time()
     for edge in result:
-        """
-        try:
-            hallway = turn_edge_to_hallway(edge)
-            hallways.append(hallway)
-        except NoLengthError as exception:
-            print(exception)
-
-    for hallway in hallways:
+        hallway = Hallway(shortest_path_dijkstra(map,
+                                                 map.cells[(
+                                                     edge.v0.x, edge.v0.y)],
+                                                 map.cells[(edge.v1.x, edge.v1.y)]))
         map.add_hallway(hallway)
-        """
-
-        hallway = Hallway(d.shortest_path(
-            map.cells[(edge.v0.x, edge.v0.y)], map.cells[(edge.v1.x, edge.v1.y)]))
-        hallways.append(hallway)
+        added_hallways.append(hallway)
     print(f"calculating shortest paths: {time.time()-start:.03f}")
     start = time.time()
-    for hallway in hallways:
-        map.add_hallway(hallway)
     print(f"adding hallways to map: {time.time()-start:.03f}")
-    return hallways
+    print("Generating done! \n")
+    return added_hallways

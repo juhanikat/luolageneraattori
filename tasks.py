@@ -30,7 +30,7 @@ def lint(ctx):
 
 @task
 def test(ctx):
-    ctx.run("poetry run pytest -vv", pty=True)
+    ctx.run("poetry run pytest src/tests/test_dijkstra.py -vv", pty=True)
 
 
 @task

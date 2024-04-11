@@ -2,6 +2,7 @@ import random
 
 from entities.cell import Cell
 from entities.hallway import Hallway
+from utilities import DEFAULT_ARGS, EMPTY_WEIGHT, PATH_WEIGHT, ROOM_WEIGHT
 
 from .room import Room
 
@@ -28,7 +29,7 @@ class Map:
     def __init__(self, size_x, size_y) -> None:
         self.size_x = size_x
         self.size_y = size_y
-        self.cells = {(x, y): Cell(x, y, 1)
+        self.cells = {(x, y): Cell(x, y, EMPTY_WEIGHT)
                       for x in range(size_x) for y in range(size_y)}
         self.placed_rooms = []
         self.added_hallways = []
@@ -41,8 +42,19 @@ class Map:
         """
         return (self.size_x, self.size_y)
 
+    def get_cell(self, coords: tuple) -> Cell:
+        """Finds the Cell object at the given coordinates.
+
+        Args:
+            coords (tuple): The coordinate to look for.
+
+        Returns:
+            The Cell object at the coordinates specified, or None if coords is outside the map's area.
+        """
+        return self.cells.get(coords, None)
+
     def create_rooms(self, amount: int, room_min_size: int = 2,
-                     room_max_size: int = 5, room_exact_size: int = 0) -> list:
+                     room_max_size: int = 4, room_exact_size: int = 0) -> list:
         """Creates rooms with sizes between <room-min-size> and <room-max-size>.
 
         Args:
@@ -64,7 +76,7 @@ class Map:
         return rooms
 
     def place_new_room(self, room: Room, overlap=False) -> Room | bool:
-        """Places a room on the map, if able.
+        """Randomly places a room on the map, if able.
 
         Args:
             room (Room): The room to be placed.
@@ -82,16 +94,16 @@ class Map:
                         return False
         return room
 
-    def place_rooms(self, amount: int = 10, room_min_size: int = 2, room_max_size: int = 5,
-                    room_exact_size: int = 0, overlap: bool = False) -> None:
+    def place_rooms(self, amount: int, room_min_size: int = -1, room_max_size: int = -1,
+                    room_exact_size: int = -1, overlap: bool = False) -> None:
         """Creates rooms and places them on the map.
 
         Args:
-            amount (int, optional): Amount of rooms. Defaults to 10.
-            room_min_size (int, optional): Minimum size of rooms. Defaults to 2.
-            room_max_size (int, optional): Maximum size of rooms. Defaults to 5.
+            amount (int, optional): Amount of rooms.
+            room_min_size (int, optional): Minimum size of rooms.
+            room_max_size (int, optional): Maximum size of rooms
             room_exact_size (int, optional): Exact size of rooms. 
-            If used, room_min_size and room_max_size do nothing. Defaults to 0.
+            If used, room_min_size and room_max_size do nothing.
             overlap (bool, optional): If True, rooms can overlap with each other. Defaults to False.
 
         Raises:
@@ -99,7 +111,12 @@ class Map:
             RoomAmountError: Raised if room amount parameter is invalid.
             RoomPlacementError: Raised if rooms cannot be placed on the map in reasonable time.
         """
-
+        if room_min_size == -1:
+            room_min_size = int(DEFAULT_ARGS["room_min_size"])
+        if room_max_size == -1:
+            room_max_size = int(DEFAULT_ARGS["room_max_size"])
+        if room_exact_size == -1:
+            room_exact_size = int(DEFAULT_ARGS["room_exact_size"])
         if room_min_size < 1:
             raise RoomSizeError("Minimum room size cannot be less than 1.")
         if room_max_size > self.size_x or room_max_size > self.size_y:
@@ -110,7 +127,7 @@ class Map:
                 "Maximum room size cannot be less than minimum room size.")
         if room_exact_size and room_exact_size < 0:
             raise RoomSizeError("Exact room size cannot be less than 1.")
-        if room_exact_size and (room_exact_size > self.size_x or room_exact_size > self.size_y):
+        if room_exact_size != 0 and (room_exact_size > self.size_x or room_exact_size > self.size_y):
             raise RoomSizeError(
                 "Exact room size cannot be larger than map size.")
         if amount < 1:
@@ -147,7 +164,7 @@ class Map:
             if placed:
                 self.placed_rooms.append(placed)
                 for coord in placed.get_all_coords():
-                    self.cells[coord] = Cell(coord[0], coord[1], 10)
+                    self.cells[coord] = Cell(coord[0], coord[1], ROOM_WEIGHT)
                 index += 1
                 if index == len(created_rooms):
                     break
@@ -155,10 +172,7 @@ class Map:
     def add_hallway(self, hallway: Hallway):
         self.added_hallways.append(hallway)
         for coord in hallway.coords:
-            self.cells[coord] = Cell(coord[0], coord[1], 0.5)
-
-    def get_cell(self, coord: tuple) -> Cell:
-        return self.cells[coord]
+            self.cells[coord] = Cell(coord[0], coord[1], PATH_WEIGHT)
 
     def check_hallway_overlap(self, hallway1: Hallway, hallway2: Hallway):
         for coord in hallway1.coords:

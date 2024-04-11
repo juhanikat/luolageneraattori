@@ -29,7 +29,7 @@ def test_max_room_size_cannot_be_less_than_1(setup: Map):
     with pytest.raises(RoomSizeError):
         setup.place_rooms(2, room_min_size=0)
     with pytest.raises(RoomSizeError):
-        setup.place_rooms(2, room_min_size=-1)
+        setup.place_rooms(2, room_min_size=-2)
 
 
 def test_max_room_size_cannot_be_less_than_min_room_size(setup: Map):

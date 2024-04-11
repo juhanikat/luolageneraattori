@@ -1,10 +1,3 @@
-from matplotlib import pyplot
-from matplotlib.patches import Rectangle
-
-from entities.map import Map
-from entities.room import Room
-
-
 def validate_int(name: str, input: str) -> int:
     """Checks that an input is not empty, can be converted to an integer, and is not less than 1.
 
@@ -30,7 +23,6 @@ def validate_int(name: str, input: str) -> int:
 
 
 DEFAULT_ARGS = {
-    "amount": "5",
     "room_min_size": "2",
     "room_max_size": "4",
     "room_exact_size": "0",
@@ -38,6 +30,10 @@ DEFAULT_ARGS = {
     "map_size_x": "20",
     "map_size_y": "20"
 }
+
+ROOM_WEIGHT = 2
+PATH_WEIGHT = 0.5
+EMPTY_WEIGHT = 1
 
 
 def convert_rooms_to_x_y_coords(rooms: list) -> list:
@@ -53,27 +49,6 @@ def convert_rooms_to_x_y_coords(rooms: list) -> list:
     for room in rooms:
         coords.append(room.bottom_left_coords)
     return coords
-
-
-def display_map(map: Map):
-    _, axis = pyplot.subplots(1, ncols=1)
-    pyplot.grid(True, which="both", linestyle="--", alpha=0.5)
-    pyplot.gca().set_aspect('equal')
-    pyplot.minorticks_on()
-    pyplot.xlim(-10, map.get_size()[0] + 10)
-    pyplot.ylim(-10, map.get_size()[1] + 10)
-
-    room: Room
-    for room in map.placed_rooms:
-        rectangle = Rectangle(room.bottom_left_coords,
-                              room.size_x, room.size_y, fc=(0, 0, 0, 0.1), ec=(0, 0, 0, 0.1))
-        axis.add_patch(rectangle)
-    for hallway in map.added_hallways:
-        for coord in hallway.coords:
-            square = Rectangle(coord, 1, 1, fc=(0, 1, 0, 0.5))
-            axis.add_patch(square)
-            
-    pyplot.show()
 
 
 """
