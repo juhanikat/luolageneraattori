@@ -34,6 +34,33 @@ class Map:
         self.placed_rooms = []
         self.added_hallways = []
 
+    def check_args(self, amount: int, room_min_size: int, room_max_size: int, room_exact_size: int):
+        if room_min_size == -1:
+            room_min_size = int(DEFAULT_ARGS["room_min_size"])
+        if room_max_size == -1:
+            room_max_size = int(DEFAULT_ARGS["room_max_size"])
+        if room_exact_size == -1:
+            room_exact_size = int(DEFAULT_ARGS["room_exact_size"])
+
+        if room_min_size < 1:
+            raise RoomSizeError("Minimum room size cannot be less than 1.")
+        if room_max_size > self.size_x or room_max_size > self.size_y:
+            raise RoomSizeError(
+                "Maximum room size cannot be larger than the map size.")
+        if room_max_size < room_min_size:
+            raise RoomSizeError(
+                "Maximum room size cannot be less than minimum room size.")
+        if room_exact_size and room_exact_size < 0:
+            raise RoomSizeError("Exact room size cannot be less than 1.")
+        if room_exact_size != 0 and (room_exact_size > self.size_x
+                                     or room_exact_size > self.size_y):
+            raise RoomSizeError(
+                "Exact room size cannot be larger than map size.")
+        if amount < 1:
+            raise RoomAmountError("Amount of rooms cannot be less than 1.")
+
+        return (room_min_size, room_max_size, room_exact_size)
+
     def get_size(self) -> tuple:
         """Returns a tuple containing the width and length of the map.
 
@@ -49,7 +76,8 @@ class Map:
             coords (tuple): The coordinate to look for.
 
         Returns:
-            The Cell object at the coordinates specified, or None if coords is outside the map's area.
+            The Cell object at the coordinates specified, 
+            or None if coords is outside the map's area.
         """
         return self.cells.get(coords, None)
 
@@ -111,28 +139,13 @@ class Map:
             RoomAmountError: Raised if room amount parameter is invalid.
             RoomPlacementError: Raised if rooms cannot be placed on the map in reasonable time.
         """
-        if room_min_size == -1:
-            room_min_size = int(DEFAULT_ARGS["room_min_size"])
-        if room_max_size == -1:
-            room_max_size = int(DEFAULT_ARGS["room_max_size"])
-        if room_exact_size == -1:
-            room_exact_size = int(DEFAULT_ARGS["room_exact_size"])
-        if room_min_size < 1:
-            raise RoomSizeError("Minimum room size cannot be less than 1.")
-        if room_max_size > self.size_x or room_max_size > self.size_y:
-            raise RoomSizeError(
-                "Maximum room size cannot be larger than the map size.")
-        if room_max_size < room_min_size:
-            raise RoomSizeError(
-                "Maximum room size cannot be less than minimum room size.")
-        if room_exact_size and room_exact_size < 0:
-            raise RoomSizeError("Exact room size cannot be less than 1.")
-        if room_exact_size != 0 and (room_exact_size > self.size_x or room_exact_size > self.size_y):
-            raise RoomSizeError(
-                "Exact room size cannot be larger than map size.")
-        if amount < 1:
-            raise RoomAmountError("Amount of rooms cannot be less than 1.")
-
+        try:
+            room_min_size, room_max_size, room_exact_size = self.check_args(amount,
+                                                                            room_min_size,
+                                                                            room_max_size,
+                                                                            room_exact_size)
+        except (RoomSizeError, RoomAmountError) as _:
+            raise
         self.placed_rooms.clear()  # remove all previous rooms
         tries = 0
         strikes = 0
@@ -157,7 +170,8 @@ class Map:
                 strikes += 1
                 if strikes == 5:
                     raise RoomPlacementError(
-                        "Rooms cannot be placed in reasonable time, they are likely too large to fit the map.")
+                        "Rooms cannot be placed in reasonable time, \
+                        they are likely too large to fit the map.")
                 index = 0
                 continue
             placed = self.place_new_room(created_rooms[index], overlap=overlap)
@@ -170,6 +184,11 @@ class Map:
                     break
 
     def add_hallway(self, hallway: Hallway):
+        """Adds a hallway to the map.
+
+        Args:
+            hallway (Hallway): The hallway that will be added.
+        """
         self.added_hallways.append(hallway)
         for coord in hallway.coords:
             self.cells[coord] = Cell(coord[0], coord[1], PATH_WEIGHT)

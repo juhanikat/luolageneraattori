@@ -18,8 +18,10 @@ class Room():
         if len(self.all_coords) == 0:
             # sets self.all_coords if it hasn't been set yet
             coords = []
-            for x in range(self.bottom_left_coords[0], self.bottom_left_coords[0] + self.size_x):
-                for y in range(self.bottom_left_coords[1], self.bottom_left_coords[1] + self.size_y):
+            for x in range(self.bottom_left_coords[0],
+                           self.bottom_left_coords[0] + self.size_x):
+                for y in range(self.bottom_left_coords[1],
+                               self.bottom_left_coords[1] + self.size_y):
                     coords.append((x, y))
             self.all_coords = coords
         return self.all_coords

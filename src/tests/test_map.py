@@ -1,6 +1,8 @@
 import pytest
 
+from entities.hallway import Hallway
 from entities.map import Map, RoomPlacementError, RoomSizeError
+from utilities import PATH_WEIGHT
 
 
 @pytest.fixture
@@ -13,6 +15,16 @@ def test_rooms_are_generated(setup: Map):
     assert len(setup.placed_rooms) == 2
     setup.place_rooms(100)
     assert len(setup.placed_rooms) == 100
+
+
+def test_hallways_are_added(setup: Map):
+    setup.add_hallway(Hallway([(0, 0), (0, 1), (0, 2), (1, 2)]))
+    assert len(setup.added_hallways) == 1
+    hallway_cells = 0
+    for cell in setup.cells.values():
+        if cell.weight == PATH_WEIGHT:
+            hallway_cells += 1
+    assert hallway_cells == 4
 
 
 def test_map_size_is_correct(setup: Map):

@@ -8,12 +8,13 @@ from entities.map import Map
 from utilities import convert_rooms_to_x_y_coords
 
 
-def generate_dungeon(map: Map) -> list:
+def generate_dungeon(map: Map, extra_edges=True) -> list:
     """Generates a path through the dungeon that visits every room.
     This is done by: \n
     1. Creating a delaunay triangulation using the rooms on the map, \n
     2. Creating a spanning tree from the triangulation, removing unnecessary edges, 
-    3. Randomly adding some removed edges back into the spanning tree, to make the resulting hallways look more natural.
+    3. Randomly adding some removed edges back into the spanning tree, 
+    to make the resulting hallways look more natural.
     4. Converting the edges into hallways.
     5. Adding these hallways to the map object.
 
@@ -37,10 +38,11 @@ def generate_dungeon(map: Map) -> list:
     start = time.time()
     result = spanning_tree(edges)
     print(f"spanning tree: {time.time()-start:.03f}")
-    for edge in edges:
-        if random.randint(1, 10) == 1 and edge not in result:
-            # 10% chance to add removed edge back into the result
-            result.append(edge)
+    if extra_edges:
+        for edge in edges:
+            if random.randint(1, 10) == 1 and edge not in result:
+                # 10% chance to add removed edge back into the result
+                result.append(edge)
     hallway: Hallway
     edge: Edge
     random.shuffle(result)

@@ -1,3 +1,4 @@
+"""Various algorithms that are used in generating paths in the dungeon."""
 import heapq
 import random
 
@@ -32,7 +33,8 @@ def get_unique_edges(edges: list) -> list:
 
 def add_vertex_and_update(vertex: Vertex, triangles: list) -> list:
     """Adds a vertex to the triangulation and checks if it is inside any triangle's circumcircle.
-    If so, it will remove those triangles and adds new triangles in their place that have the new vertex as one of their vertices.
+    If so, it will remove those triangles and adds new triangles in their place 
+    that have the new vertex as one of their vertices.
 
     Args:
         vertex (Vertex): The vertex that will be added.
@@ -140,7 +142,8 @@ def spanning_tree(edges: list) -> list:
 
 def shortest_path_dijkstra(map: Map, start_cell: Cell, end_cell: Cell) -> list:
     """Copied from TIRA 2024 course material with some changes. \n
-    Calculates the shortest path between start_cell and end_cell. Going through rooms is expensive, and going through existing hallways is cheap.
+    Calculates the shortest path between start_cell and end_cell. 
+    Going through rooms is expensive, and going through existing hallways is cheap.
 
     Args:
         start_cell (_type_): The cell where the algorithm starts.
