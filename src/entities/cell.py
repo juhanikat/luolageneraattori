@@ -1,6 +1,8 @@
 class Cell:
+    # TODO
 
     def __init__(self, x: int, y: int, weight=1) -> None:
+        # TODO
         self.coords = (x, y)
         self.weight = weight
 

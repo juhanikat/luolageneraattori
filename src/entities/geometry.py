@@ -4,8 +4,7 @@ import uuid
 
 
 class BadTriangleError(Exception):
-    """Raised if a triangle constructor is given 3 points that cannot be made into a triangle.
-    """
+    """Raised if a triangle constructor is given 3 points that cannot be made into a triangle."""
 
 
 class Vertex:
