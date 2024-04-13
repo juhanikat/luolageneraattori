@@ -100,7 +100,7 @@ def bowyer_watson(x_y_coords: list) -> list:
 
 
 def search(edge: Edge, used_vertices: list, next_to: list, result: list) -> list:
-    """Used by spanning_tree to remove unnecessary edges.
+    """Recursive function used by spanning_tree to remove unnecessary edges.
 
     Returns:
         list: The edges that are in the spanning tree.
@@ -146,8 +146,8 @@ def shortest_path_dijkstra(map: Map, start_cell: Cell, end_cell: Cell) -> list:
     Going through rooms is expensive, and going through existing hallways is cheap.
 
     Args:
-        start_cell (_type_): The cell where the algorithm starts.
-        end_cell (_type_): The cell where the algorithm ends.
+        start_cell (Cell): The cell where the algorithm starts.
+        end_cell (Cell): The cell where the algorithm ends.
 
     Returns:
         list: A list of coordinate tuples that is the shortest path between the 2 cells.

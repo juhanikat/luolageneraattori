@@ -9,13 +9,22 @@ Algoritmeja:
 - Room-luokkaa testataan varmistamalla että huoneen pinta-ala kerrotaan oikein ja että luokan get_all_coords() metodi antaa kaikki huoneen peittämät koordinaatit.
 - Map-luokkaa testataan muun muassa varmistamalla että place_rooms() metodille ei voi antaa vääränlaisia argumentteja.
 
+Algoritmien yhteistoimintaa testataan tiedostossa test_generate.py varmistamalla, että generate.py:ssä sijaitseva funktio muodostaa luolaston oikein.
+
+## Yksikkötestauksen kattavuusraportti
+
 ```
-Name                   Stmts   Miss Branch BrPart  Cover   Missing
-------------------------------------------------------------------
-src/algorithms.py        104      4     32      1    96%   21, 50, 87, 120
-src/entities/map.py       75      8     34      3    88%   106, 108, 111, 148-152
-src/entities/room.py      20      1      6      0    96%   40
-src/utilities.py          60     60     22      0     0%   1-128
-------------------------------------------------------------------
-TOTAL                    259     73     94      4    71%
+Name                       Stmts   Miss Branch BrPart  Cover   Missing
+----------------------------------------------------------------------
+src/algorithms.py             99      3     48      3    96%   128, 171, 197
+src/entities/cell.py           6      0      0      0   100%
+src/entities/geometry.py      53      4      2      1    91%   21, 51, 74, 145
+src/entities/hallway.py        3      0      0      0   100%
+src/entities/map.py          100      8     46      3    91%   75, 78, 81, 218-222
+src/entities/room.py          20      1      6      0    96%   42
+src/services/generate.py      37      3     10      1    83%   42-45
+src/testing.py               131    131     50      0     0%   1-173
+src/utilities.py              19      9      6      0    48%   30-38
+----------------------------------------------------------------------
+TOTAL                        468    159    168      8    64%
 ```

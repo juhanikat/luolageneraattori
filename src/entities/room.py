@@ -1,5 +1,5 @@
 class Room():
-    """Depicts a room. Rooms have a length, a width and a location (x, y coordinate pair).
+    """Represents a room on the map. Rooms have a length, a width and a location (x, y coordinate pair).
     """
 
     def __init__(self, size_x, size_y) -> None:
@@ -7,7 +7,7 @@ class Room():
         self.size_y = size_y
         self.area = size_x*size_y
         self.bottom_left_coords = ()
-        self.all_coords = []  # list of tuples
+        self.all_coords = []
 
     def get_all_coords(self):
         """Returns coordinates of all cells that make up the room.

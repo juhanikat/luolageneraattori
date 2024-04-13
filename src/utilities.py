@@ -1,3 +1,19 @@
+# Default arguments used for generating the dungeon.
+DEFAULT_ARGS = {
+    "room_min_size": "2",
+    "room_max_size": "4",
+    "room_exact_size": "0",
+    "can_overlap": False,
+    "map_size_x": "20",
+    "map_size_y": "20"
+}
+
+# Weights given to ifferent types of cells on the map.
+ROOM_WEIGHT = 2
+PATH_WEIGHT = 0.5
+EMPTY_WEIGHT = 1
+
+
 def validate_int(name: str, input: str) -> int:
     """Checks that an input is not empty, can be converted to an integer, and is not less than 1.
 
@@ -22,20 +38,6 @@ def validate_int(name: str, input: str) -> int:
     return input
 
 
-DEFAULT_ARGS = {
-    "room_min_size": "2",
-    "room_max_size": "4",
-    "room_exact_size": "0",
-    "can_overlap": False,
-    "map_size_x": "20",
-    "map_size_y": "20"
-}
-
-ROOM_WEIGHT = 2
-PATH_WEIGHT = 0.5
-EMPTY_WEIGHT = 1
-
-
 def convert_rooms_to_x_y_coords(rooms: list) -> list:
     """Takes a list of room objects and converts them to the x, y coordinates of the rooms.
 
@@ -43,36 +45,9 @@ def convert_rooms_to_x_y_coords(rooms: list) -> list:
         rooms (list): Rooms to convert.
 
     Returns:
-        list: A list of x, y coordinates.
+        list: A list of (x, y) coordinates.
     """
     coords = []
     for room in rooms:
         coords.append(room.bottom_left_coords)
     return coords
-
-
-"""
-def display_rooms_and_edges(edges: list, rooms: list, map_size: tuple) -> None:
-    if not edges:
-        return None
-    _, axis = pyplot.subplots(1, ncols=1)
-    pyplot.grid(True, which="both", linestyle="--", alpha=0.5)
-    pyplot.gca().set_aspect('equal')
-    pyplot.minorticks_on()
-    pyplot.xlim(-10, map_size[0] + 10)
-    pyplot.ylim(-10, map_size[1] + 10)
-    for room in rooms:
-        rectangle = Rectangle(room.bottom_left_coords,
-                              room.size_x, room.size_y, fc=(0, 0, 0, 0.1), ec=(0, 0, 0, 0.1))
-        axis.add_patch(rectangle)
-    pyplot.ion()
-
-    for edge in edges:
-        for coord in edge:
-            square = Rectangle(coord, 1, 1, fc=(0, 1, 0, 0.5))
-            axis.add_patch(square)
-
-        pyplot.pause(0.01)
-    pyplot.ioff()
-    pyplot.show()
-"""

@@ -23,10 +23,16 @@ class RoomAmountError(Exception):
 
 
 class Map:
-    """A class that holds all placed rooms.
+    """A class that holds all placed rooms and hallways.
     """
 
-    def __init__(self, size_x, size_y) -> None:
+    def __init__(self, size_x: int, size_y: int) -> None:
+        """_summary_
+
+        Args:
+            size_x (int): Width of the map.
+            size_y (int): Height of the map.
+        """
         self.size_x = size_x
         self.size_y = size_y
         self.cells = {(x, y): Cell(x, y, EMPTY_WEIGHT)
@@ -34,7 +40,22 @@ class Map:
         self.placed_rooms = []
         self.added_hallways = []
 
-    def check_args(self, amount: int, room_min_size: int, room_max_size: int, room_exact_size: int):
+    def check_args(self, amount: int, room_min_size: int, room_max_size: int, room_exact_size: int) -> tuple:
+        """Validates the arguments that are given to place_rooms, or gives default values to them.
+
+        Args:
+            amount (int): Amount of rooms.
+            room_min_size (int): Minimum size of rooms.
+            room_max_size (int): Maximum size of rooms.
+            room_exact_size (int): Exact size of rooms. If present, room_min_size and room_max_size do nothing.
+
+        Raises:
+            RoomSizeError: Raised if a room size argument is invalid.
+            RoomAmountError: Raised if amount of rooms is invalid.
+
+        Returns:
+            tuple: The values of room_min_size, room_max_size and room_exact_size.
+        """
         if room_min_size == -1:
             room_min_size = int(DEFAULT_ARGS["room_min_size"])
         if room_max_size == -1:
@@ -83,7 +104,7 @@ class Map:
 
     def create_rooms(self, amount: int, room_min_size: int = 2,
                      room_max_size: int = 4, room_exact_size: int = 0) -> list:
-        """Creates rooms with sizes between <room-min-size> and <room-max-size>.
+        """Creates rooms with sizes between room-min-size and room-max-size.
 
         Args:
             amount (int): Amount of rooms to create.
@@ -146,7 +167,7 @@ class Map:
                                                                             room_exact_size)
         except (RoomSizeError, RoomAmountError) as _:
             raise
-        self.placed_rooms.clear()  # remove all previous rooms
+        self.placed_rooms.clear()
         tries = 0
         strikes = 0
         index = 0
@@ -170,8 +191,8 @@ class Map:
                 strikes += 1
                 if strikes == 5:
                     raise RoomPlacementError(
-                        "Rooms cannot be placed in reasonable time, \
-                        they are likely too large to fit the map.")
+                        "Rooms cannot be placed in reasonable time, " +
+                        "try adjusting room amount or room size.")
                 index = 0
                 continue
             placed = self.place_new_room(created_rooms[index], overlap=overlap)
@@ -192,12 +213,6 @@ class Map:
         self.added_hallways.append(hallway)
         for coord in hallway.coords:
             self.cells[coord] = Cell(coord[0], coord[1], PATH_WEIGHT)
-
-    def check_hallway_overlap(self, hallway1: Hallway, hallway2: Hallway):
-        for coord in hallway1.coords:
-            if coord in hallway2.coords:
-                return True
-        return False
 
     def __str__(self) -> str:
         representation = f"\n Map size: Y{self.size_y} * X{self.size_x} \n"

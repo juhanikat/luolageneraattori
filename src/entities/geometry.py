@@ -8,7 +8,7 @@ class BadTriangleError(Exception):
 
 
 class Vertex:
-    """This represents a node in the network."""
+    """Represents a node in the network."""
 
     def __init__(self, x, y) -> None:
         self.x = x
@@ -22,7 +22,7 @@ class Vertex:
 
 
 class Edge:
-    """This represents a line that connects two vertices together.
+    """Represents a line that connects two vertices together.
     Two edges are equal if they share the same 2 vertices.
 
         Attributes:
@@ -135,11 +135,11 @@ class Triangle:
             vertex(Vertex): The vertex that is checked.
 
         Returns:
-            _type_: True if vertex is inside the circumcircle, and False otherwise.
+            bool: True if vertex is inside the circumcircle, and False otherwise.
         """
         dx = self.circumcenter[0] - vertex.x
         dy = self.circumcenter[1] - vertex.y
         return math.sqrt(dx * dx + dy * dy) <= self.circumcircle_radius
 
     def __str__(self) -> str:
-        return f"vertices: \n {self.v0} \n {self.v1} \n {self.v2} \n edges: \n {self.edge0} \n {self.edge1} \n {self.edge2} \n"
+        return f"Edges: \n {self.edge0} \n {self.edge1} \n {self.edge2}"

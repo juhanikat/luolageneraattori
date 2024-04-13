@@ -68,6 +68,7 @@ class UI:
 
         display_map(self.map)
         self.change_run_button_text("Run")
+        self.error_message.config(text="")
 
     def create_ui(self):
         amount = tk.StringVar(self.root)
