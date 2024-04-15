@@ -122,9 +122,10 @@ class UI:
 
 
 def display_map(map: Map):
+    return
     start = time.time()
+    pyplot.style.use("bmh")
     _, axis = pyplot.subplots(1, ncols=1)
-    pyplot.grid(True, which="both", linestyle="--", alpha=0.5)
     pyplot.gca().set_aspect('equal')
     pyplot.minorticks_on()
     pyplot.xlim(0, map.get_size()[0])
@@ -133,7 +134,7 @@ def display_map(map: Map):
     room: Room
     for room in map.placed_rooms:
         rectangle = Rectangle(room.bottom_left_coords,
-                              room.size_x, room.size_y, fc=(0, 0, 0, 0.1), ec=(0, 0, 0, 0.1))
+                              room.size_x, room.size_y, fc=(1, 0, 0, 0.5), ec=(0, 0, 0, 0.1))
         axis.add_patch(rectangle)
     for hallway in map.added_hallways:
         for coord in hallway.coords:

@@ -1,11 +1,15 @@
 import random
 import time
 
-from algorithms import (Edge, bowyer_watson, shortest_path_dijkstra,
-                        spanning_tree)
+from algorithms import (Edge, bowyer_watson, shortest_path_a_star,
+                        shortest_path_dijkstra, spanning_tree)
 from entities.hallway import Hallway
 from entities.map import Map
 from utilities import convert_rooms_to_x_y_coords
+
+
+class NoTrianglesError(Exception):
+    """Raised if bowyer-watson algorithm could not generate the triangulation."""
 
 
 def generate_dungeon(map: Map, extra_edges=True) -> list:
@@ -29,6 +33,8 @@ def generate_dungeon(map: Map, extra_edges=True) -> list:
     print(f"convert rooms to x, y: {time.time()-start:.03f}")
     start = time.time()
     triangles = bowyer_watson(x_y_coords)
+    if not triangles:
+        raise NoTrianglesError("Could not triangulate.")
     print(f"bowyer-watson: {time.time()-start:.03f}")
     edges = []
     for triangle in triangles:
@@ -38,7 +44,7 @@ def generate_dungeon(map: Map, extra_edges=True) -> list:
     start = time.time()
     result = spanning_tree(edges)
     print(f"spanning tree: {time.time()-start:.03f}")
-    if extra_edges:
+    if False:
         for edge in edges:
             if random.randint(1, 10) == 1 and edge not in result:
                 # 10% chance to add removed edge back into the result
@@ -49,10 +55,10 @@ def generate_dungeon(map: Map, extra_edges=True) -> list:
     added_hallways = []
     start = time.time()
     for edge in result:
-        hallway = Hallway(shortest_path_dijkstra(map,
-                                                 map.cells[(
-                                                     edge.v0.x, edge.v0.y)],
-                                                 map.cells[(edge.v1.x, edge.v1.y)]))
+        hallway = Hallway(shortest_path_a_star(map,
+                                               map.cells[(
+                                                   edge.v0.x, edge.v0.y)],
+                                               map.cells[(edge.v1.x, edge.v1.y)]))
         map.add_hallway(hallway)
         added_hallways.append(hallway)
     print(f"calculating shortest paths: {time.time()-start:.03f}")

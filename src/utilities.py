@@ -10,7 +10,7 @@ DEFAULT_ARGS = {
 
 # Weights given to ifferent types of cells on the map.
 ROOM_WEIGHT = 2
-PATH_WEIGHT = 0.5
+PATH_WEIGHT = 0.9
 EMPTY_WEIGHT = 1
 
 
