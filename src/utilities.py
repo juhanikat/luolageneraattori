@@ -1,3 +1,5 @@
+from entities.geometry import Vertex
+
 # Default arguments used for generating the dungeon.
 DEFAULT_ARGS = {
     "room_min_size": "2",
@@ -51,3 +53,19 @@ def convert_rooms_to_x_y_coords(rooms: list) -> list:
     for room in rooms:
         coords.append(room.bottom_left_coords)
     return coords
+
+
+def convert_rooms_to_vertices(rooms: list) -> list:
+    """Takes a list of room objects and converts them to vertices.
+
+    Args:
+        rooms (list): Rooms to convert.
+
+    Returns:
+        list: A list of vertices.
+    """
+    vertices = []
+    for room in rooms:
+        vertices.append(
+            Vertex(room.bottom_left_coords[0], room.bottom_left_coords[1]))
+    return vertices

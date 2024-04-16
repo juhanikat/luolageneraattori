@@ -18,7 +18,10 @@ class Vertex:
         return self.x == other.x and self.y == other.y
 
     def __str__(self) -> str:
-        return f"x: {self.x} y: {self.y}"
+        return f"({self.x}, {self.y})"
+
+    def __repr__(self) -> str:
+        return f"Vertex ({self.x}, {self.y})"
 
 
 class Edge:
@@ -48,7 +51,7 @@ class Edge:
             (self.v0 == other.v1 and self.v1 == other.v0)
 
     def __str__(self) -> str:
-        return f"length: {self.length} vertex 0: {self.v0} vertex 1: {self.v1}"
+        return f"length: {self.length} vertex 0: ({self.v0}) vertex 1: ({self.v1})"
 
 
 class Triangle:

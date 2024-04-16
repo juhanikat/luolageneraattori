@@ -2,6 +2,8 @@
 import heapq
 import random
 
+from matplotlib import pyplot
+
 from entities.cell import Cell
 from entities.geometry import Edge, Triangle, Vertex
 from entities.map import Map
@@ -90,8 +92,8 @@ def bowyer_watson(x_y_coords: list) -> list:
     smallest_y = min(y_coords)
 
     # create a supertriangle that is big enough to include all vertices inside its circumcircle
-    st = Triangle(Vertex(smallest_x - 1000000, smallest_y - 1000000),
-                  Vertex(0, largest_y + 1000000), Vertex(largest_x + 1000000, smallest_y - 1000000))
+    st = Triangle(Vertex(smallest_x - 1000, smallest_y - 1000),
+                  Vertex(0, largest_y + 1000), Vertex(largest_x + 1000, smallest_y - 1000))
 
     # the list that will contain all our triangles
     triangles = [st]
@@ -112,6 +114,10 @@ def bowyer_watson(x_y_coords: list) -> list:
             print(triangle)
         for x_y_coord in x_y_coords:
             print(x_y_coord)
+        for triangle in triangles:
+            pyplot.plot([triangle.v0.x, triangle.v1.x, triangle.v2.x, triangle.v0.x], [
+                triangle.v0.y, triangle.v1.y, triangle.v2.y, triangle.v0.y])
+        pyplot.show()
 
     return valid_triangles
 
