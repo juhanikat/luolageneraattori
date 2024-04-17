@@ -1,8 +1,10 @@
 import time
 import tkinter as tk
 
+import numpy as np
 from matplotlib import pyplot
 from matplotlib.patches import Rectangle
+from matplotlib.ticker import AutoMinorLocator
 
 from entities.map import (Map, RoomAmountError, RoomPlacementError,
                           RoomSizeError)
@@ -14,7 +16,7 @@ from utilities import DEFAULT_ARGS, validate_int
 class UI:
 
     def __init__(self) -> None:
-        self.map = Map(20, 20)
+        self.map = None
         self.root = tk.Tk()
         self.error_message = None
         self.run_button_text = tk.StringVar()
@@ -45,21 +47,14 @@ class UI:
             map_size_y = validate_int("Map size y", map_size_y)
             self.change_run_button_text("Loading...")
             self.root.update_idletasks()
-            self.map = Map(map_size_x, map_size_y)
-            self.map.place_rooms(
-                amount=amount,
-                room_min_size=room_min_size,
-                room_max_size=room_max_size)
-
-        except ValueError as exception:
-            self.error_message.config(
-                text=exception)
-            return
+            self.map = Map(map_size_x, map_size_y, amount, room_min_size=room_min_size,
+                           room_max_size=room_max_size)
+            edges = generate_dungeon(self.map)
         except (ValueError, RoomAmountError, RoomSizeError, RoomPlacementError) as exception:
+            print(exception)
             self.error_message.config(text=exception)
             self.change_run_button_text("Run")
             return
-        edges = generate_dungeon(self.map)
         if not edges:
             self.error_message.config(
                 text="Dungeon cannot be generated with these parameters, try increasing amount of rooms.")
@@ -122,14 +117,22 @@ class UI:
 
 
 def display_map(map: Map):
-    return
     start = time.time()
     pyplot.style.use("bmh")
-    _, axis = pyplot.subplots(1, ncols=1)
-    pyplot.gca().set_aspect('equal')
-    pyplot.minorticks_on()
-    pyplot.xlim(0, map.get_size()[0])
-    pyplot.ylim(0, map.get_size()[1])
+    figure = pyplot.figure()
+    axis = figure.add_subplot(1, 1, 1)
+    axis.set_aspect('equal')
+    axis.set_xlim(0, map.get_size()[0])
+    axis.set_ylim(0, map.get_size()[1])
+    major_ticks = np.arange(0, map.get_size()[0], 20)
+    minor_ticks = np.arange(0, map.get_size()[1], 1)
+    axis.set_xticks(major_ticks)
+    axis.set_xticks(minor_ticks, minor=True)
+    axis.set_yticks(major_ticks)
+    axis.set_yticks(minor_ticks, minor=True)
+    axis.grid(which='both')
+    axis.grid(which='minor', alpha=0.2)
+    axis.grid(which='major', alpha=0.5)
 
     room: Room
     for room in map.placed_rooms:

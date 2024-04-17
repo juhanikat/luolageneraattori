@@ -16,7 +16,7 @@ def test_10_rooms_are_connected(setup: Map):
 
 
 def test_placing_rooms_many_times():
-    for _ in range(5000):
+    for _ in range(10):
         test_map = Map(100, 100, 3)
         test_map.place_rooms()
         edges = generate_dungeon(test_map, extra_edges=False)

@@ -5,9 +5,8 @@ DEFAULT_ARGS = {
     "room_min_size": "2",
     "room_max_size": "4",
     "room_exact_size": "0",
-    "can_overlap": False,
-    "map_size_x": "20",
-    "map_size_y": "20"
+    "map_size_x": "50",
+    "map_size_y": "50"
 }
 
 # Weights given to ifferent types of cells on the map.

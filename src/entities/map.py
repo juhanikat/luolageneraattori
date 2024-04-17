@@ -28,12 +28,17 @@ class Map:
     """A class that holds all placed rooms and hallways.
     """
 
-    def __init__(self, size_x: int, size_y: int, amount: int, room_min_size: int = -1, room_max_size: int = -1, room_exact_size: int = -1, overlap=False) -> None:
+    def __init__(self, size_x: int, size_y: int, amount: int, room_min_size: int = -1, room_max_size: int = -1, room_exact_size: int = -1) -> None:
         """_summary_
 
         Args:
             size_x (int): Width of the map.
             size_y (int): Height of the map.
+            amount (int, optional): Amount of rooms.
+            room_min_size (int, optional): Minimum size of rooms.
+            room_max_size (int, optional): Maximum size of rooms
+            room_exact_size (int, optional): Exact size of rooms. 
+            If used, room_min_size and room_max_size do nothing.
         """
         self.size_x = size_x
         self.size_y = size_y
@@ -42,27 +47,24 @@ class Map:
         self.created_rooms = []
         self.placed_rooms = []
         self.added_hallways = []
+        self.ROOM_PLACEMENT_TRIES = 2000
 
         try:
             self.check_args(amount,
                             room_min_size,
                             room_max_size,
                             room_exact_size)
-        except (RoomSizeError, RoomAmountError) as _:
-            raise
+        except (RoomSizeError, RoomAmountError) as exception:
+            raise exception
 
-        self.amount = amount
-        self.room_min_size = room_min_size
-        self.room_max_size = room_max_size
-        self.room_exact_size = room_exact_size
-        self.overlap = overlap
+        self.create_rooms()
 
     def reset_placement(self):
         self.placed_rooms.clear()
         self.cells = {(x, y): Cell(x, y, EMPTY_WEIGHT)
                       for x in range(self.size_x) for y in range(self.size_y)}
 
-    def check_args(self, amount: int, room_min_size: int, room_max_size: int, room_exact_size: int) -> tuple:
+    def check_args(self, amount: int, room_min_size: int, room_max_size: int, room_exact_size: int) -> None:
         """Validates the arguments that are given to the map, or gives default values to them.
 
         Args:
@@ -112,10 +114,10 @@ class Map:
         return formula == 0
 
     def get_size(self) -> tuple:
-        """Returns a tuple containing the width and length of the map.
+        """Returns a tuple containing the width and height of the map.
 
         Returns:
-            tuple: Map dimensions in (width, length) format.
+            tuple: Map dimensions in (width, height) format.
         """
         return (self.size_x, self.size_y)
 
@@ -132,14 +134,7 @@ class Map:
         return self.cells.get(coords, None)
 
     def create_rooms(self) -> list:
-        """Creates rooms with sizes between room-min-size and room-max-size.
-
-        Args:
-            amount (int): Amount of rooms to create.
-
-        Returns:
-            list: The list of created rooms.
-        """
+        # TODO
         rooms = []
         for _ in range(self.amount):
             if self.room_exact_size:
@@ -166,23 +161,22 @@ class Map:
         x_coord = random.randint(0, self.size_x - room.size_x)
         y_coord = random.randint(0, self.size_y - room.size_y)
         room.bottom_left_coords = (x_coord, y_coord)
-        if self.overlap is False:
-            for coord in room.get_all_coords():
-                for placed_room in self.placed_rooms:
-                    if placed_room.covers(coord):  # if rooms overlap
-                        return False
+
+        for coord in room.get_all_coords():
+            for placed_room in self.placed_rooms:
+                if placed_room.covers(coord):  # if rooms overlap
+                    return False
+
+        self.placed_rooms.append(room)
+        for coord in room.get_all_coords():
+            self.cells[coord] = Cell(coord[0], coord[1], ROOM_WEIGHT)
+
         return room
 
     def place_rooms(self) -> None:
         """Creates rooms and places them on the map.
 
-        Args:
-            amount (int, optional): Amount of rooms.
-            room_min_size (int, optional): Minimum size of rooms.
-            room_max_size (int, optional): Maximum size of rooms
-            room_exact_size (int, optional): Exact size of rooms. 
-            If used, room_min_size and room_max_size do nothing.
-            overlap (bool, optional): If True, rooms can overlap with each other. Defaults to False.
+
 
         Raises:
             RoomSizeError: Raised if room size parameters are invalid.
@@ -195,9 +189,8 @@ class Map:
         strikes = 0
         index = 0
         while True:
-            print("loop")
             tries += 1
-            if tries >= 500:
+            if tries >= self.ROOM_PLACEMENT_TRIES:
                 print(
                     f"Tried to place room {tries} times, removing all rooms to try again.")
                 self.reset_placement()
@@ -210,27 +203,16 @@ class Map:
                         "try adjusting room amount or room size.")
                 index = 0
                 continue
-            print(index)
             placed = self.place_new_room(self.created_rooms[index])
             if placed:
-                print("placed")
-                self.placed_rooms.append(placed)
-                for coord in placed.get_all_coords():
-                    self.cells[coord] = Cell(coord[0], coord[1], ROOM_WEIGHT)
                 index += 1
                 if index == len(self.created_rooms):
-                    print("done")
-                    print(index)
-                    print(self.placed_rooms)
                     if len(self.created_rooms) == 3:
-                        print(self.created_rooms)
                         parallel = self.check_parallel(
                             *convert_rooms_to_vertices(self.placed_rooms))
                         if parallel:
                             print("parallel")
                             self.reset_placement()
-                            self.create_rooms()
-                            tries = 0
                             strikes += 1
                             if strikes == 5:
                                 raise RoomPlacementError(
@@ -249,10 +231,3 @@ class Map:
         self.added_hallways.append(hallway)
         for coord in hallway.coords:
             self.cells[coord] = Cell(coord[0], coord[1], PATH_WEIGHT)
-
-    def __str__(self) -> str:
-        representation = f"\n Map size: Y{self.size_y} * X{self.size_x} \n"
-        representation += f"Rooms: {len(self.placed_rooms)} \n"
-        for index, room in enumerate(self.placed_rooms):
-            representation += f"Room {index}: {room} \n"
-        return representation

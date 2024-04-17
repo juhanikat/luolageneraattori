@@ -4,7 +4,7 @@ import time
 from algorithms import (Edge, bowyer_watson, shortest_path_a_star,
                         shortest_path_dijkstra, spanning_tree)
 from entities.hallway import Hallway
-from entities.map import Map
+from entities.map import Map, RoomPlacementError
 from utilities import convert_rooms_to_x_y_coords
 
 
@@ -28,7 +28,7 @@ def generate_dungeon(map: Map, extra_edges=True) -> list:
     Returns:
         list: The hallways that make up the path.
     """
-    map.create_rooms()
+    
     map.place_rooms()
     start = time.time()
     x_y_coords = convert_rooms_to_x_y_coords(map.placed_rooms)
@@ -52,7 +52,7 @@ def generate_dungeon(map: Map, extra_edges=True) -> list:
     start = time.time()
     result = spanning_tree(edges)
     print(f"spanning tree: {time.time()-start:.03f}")
-    if False:
+    if extra_edges:
         for edge in edges:
             if random.randint(1, 10) == 1 and edge not in result:
                 # 10% chance to add removed edge back into the result

@@ -107,6 +107,7 @@ def bowyer_watson(x_y_coords: list) -> list:
     valid_triangles = [triangle for triangle in triangles if not (
         triangle.v0 in st_vertices or triangle.v1 in st_vertices or triangle.v2 in st_vertices
     )]
+    """
     if not valid_triangles:
         for vertex in st_vertices:
             print(vertex)
@@ -118,6 +119,7 @@ def bowyer_watson(x_y_coords: list) -> list:
             pyplot.plot([triangle.v0.x, triangle.v1.x, triangle.v2.x, triangle.v0.x], [
                 triangle.v0.y, triangle.v1.y, triangle.v2.y, triangle.v0.y])
         pyplot.show()
+    """
 
     return valid_triangles
 

@@ -12,7 +12,8 @@ def test_thousand_rooms():
         x = i
         y = i**2
         coords.append((x, y))
-    bowyer_watson(coords)
+    triangles = bowyer_watson(coords)
+    assert len(triangles) == 512
 
 
 def test_rooms_with_same_y_coordinate_results_in_0_triangles():
