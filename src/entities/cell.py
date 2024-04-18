@@ -10,7 +10,8 @@ class Cell:
             x (int): x-coordinate of the cell.
             y (int): y-coordinate of the cell.
             weight (int, optional): The weight of the cell,
-            used by pathfinding algorithms to decide whether to go through the cell or not. Defaults to 1.
+            used by pathfinding algorithms to decide whether to 
+            go through the cell or not. Defaults to 1.
         """
         self.coords = (x, y)
         self.weight = weight

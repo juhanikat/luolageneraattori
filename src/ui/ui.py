@@ -4,7 +4,6 @@ import tkinter as tk
 import numpy as np
 from matplotlib import pyplot
 from matplotlib.patches import Rectangle
-from matplotlib.ticker import AutoMinorLocator
 
 from entities.map import (Map, RoomAmountError, RoomPlacementError,
                           RoomSizeError)

@@ -247,7 +247,7 @@ def shortest_path_a_star(map: Map, start_cell: Cell, end_cell: Cell) -> list:
     """
 
     def heuristic(cell1: Cell, cell2: Cell):
-        return abs((cell1.coords[0] - cell2.coords[0] + 10) + (cell1.coords[1] - cell2.coords[1]))
+        return abs((cell1.coords[0] - cell2.coords[0]) + (cell1.coords[1] - cell2.coords[1]))
 
     cells = map.cells.values()
     distances = {}
@@ -290,7 +290,6 @@ def shortest_path_a_star(map: Map, start_cell: Cell, end_cell: Cell) -> list:
                 distances[cell2] = new_distance
                 previous[cell2] = cell1
                 new_pair = (new_distance + heuristic(cell2, end_cell), cell2)
-                # new_pair = (new_distance, cell2)
                 heapq.heappush(queue, new_pair)
 
     if distances[end_cell] == float("inf"):

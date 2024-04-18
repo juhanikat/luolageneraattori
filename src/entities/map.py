@@ -8,6 +8,8 @@ from utilities import (DEFAULT_ARGS, EMPTY_WEIGHT, PATH_WEIGHT, ROOM_WEIGHT,
 
 from .room import Room
 
+ROOM_PLACEMENT_TRIES = 2000
+
 
 class RoomSizeError(Exception):
     """Raised if room size parameters are invalid.
@@ -28,7 +30,9 @@ class Map:
     """A class that holds all placed rooms and hallways.
     """
 
-    def __init__(self, size_x: int, size_y: int, amount: int, room_min_size: int = -1, room_max_size: int = -1, room_exact_size: int = -1) -> None:
+    def __init__(self, size_x: int, size_y: int, amount: int,
+                 room_min_size: int = -1, room_max_size: int = -1,
+                 room_exact_size: int = -1) -> None:
         """_summary_
 
         Args:
@@ -47,7 +51,6 @@ class Map:
         self.created_rooms = []
         self.placed_rooms = []
         self.added_hallways = []
-        self.ROOM_PLACEMENT_TRIES = 2000
 
         try:
             self.check_args(amount,
@@ -59,19 +62,23 @@ class Map:
 
         self.create_rooms()
 
-    def reset_placement(self):
+    def reset_placement(self) -> None:
+        """Resets map state."""
         self.placed_rooms.clear()
         self.cells = {(x, y): Cell(x, y, EMPTY_WEIGHT)
-                      for x in range(self.size_x) for y in range(self.size_y)}
+                      for x in range(self.size_x)
+                      for y in range(self.size_y)}
 
-    def check_args(self, amount: int, room_min_size: int, room_max_size: int, room_exact_size: int) -> None:
+    def check_args(self, amount: int, room_min_size: int, room_max_size: int,
+                   room_exact_size: int) -> None:
         """Validates the arguments that are given to the map, or gives default values to them.
 
         Args:
             amount (int): Amount of rooms.
             room_min_size (int): Minimum size of rooms.
             room_max_size (int): Maximum size of rooms.
-            room_exact_size (int): Exact size of rooms. If present, room_min_size and room_max_size do nothing.
+            room_exact_size (int): Exact size of rooms. If present, 
+            room_min_size and room_max_size do nothing.
 
         Raises:
             RoomSizeError: Raised if a room size argument is invalid.
@@ -105,7 +112,6 @@ class Map:
         self.room_min_size = room_min_size
         self.room_max_size = room_max_size
         self.room_exact_size = room_exact_size
-        return None
 
     def check_parallel(self, vertex1: Vertex, vertex2: Vertex, vertex3: Vertex):
         formula = vertex3.x * vertex2.y + vertex1.x * vertex3.y + vertex2.x * vertex1.y - \
@@ -133,8 +139,8 @@ class Map:
         """
         return self.cells.get(coords, None)
 
-    def create_rooms(self) -> list:
-        # TODO
+    def create_rooms(self) -> None:
+        """Creates rooms and places them in self.created_rooms."""
         rooms = []
         for _ in range(self.amount):
             if self.room_exact_size:
@@ -190,7 +196,7 @@ class Map:
         index = 0
         while True:
             tries += 1
-            if tries >= self.ROOM_PLACEMENT_TRIES:
+            if tries >= ROOM_PLACEMENT_TRIES:
                 print(
                     f"Tried to place room {tries} times, removing all rooms to try again.")
                 self.reset_placement()
@@ -208,8 +214,10 @@ class Map:
                 index += 1
                 if index == len(self.created_rooms):
                     if len(self.created_rooms) == 3:
+                        vertex1, vertex2, vertex3 = convert_rooms_to_vertices(
+                            self.placed_rooms)
                         parallel = self.check_parallel(
-                            *convert_rooms_to_vertices(self.placed_rooms))
+                            vertex1, vertex2, vertex3)
                         if parallel:
                             print("parallel")
                             self.reset_placement()

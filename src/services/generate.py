@@ -4,7 +4,7 @@ import time
 from algorithms import (Edge, bowyer_watson, shortest_path_a_star,
                         shortest_path_dijkstra, spanning_tree)
 from entities.hallway import Hallway
-from entities.map import Map, RoomPlacementError
+from entities.map import Map
 from utilities import convert_rooms_to_x_y_coords
 
 
@@ -28,11 +28,13 @@ def generate_dungeon(map: Map, extra_edges=True) -> list:
     Returns:
         list: The hallways that make up the path.
     """
-    
+
     map.place_rooms()
+
     start = time.time()
     x_y_coords = convert_rooms_to_x_y_coords(map.placed_rooms)
     print(f"convert rooms to x, y: {time.time()-start:.03f}")
+
     start = time.time()
     triangles = []
     tries = 0
@@ -44,19 +46,23 @@ def generate_dungeon(map: Map, extra_edges=True) -> list:
         if tries == 5:
             raise NoTrianglesError("Could not triangulate.")
     print(f"bowyer-watson: {time.time()-start:.03f}")
+
     edges = []
     for triangle in triangles:
         edges.append(triangle.edge0)
         edges.append(triangle.edge1)
         edges.append(triangle.edge2)
+
     start = time.time()
     result = spanning_tree(edges)
     print(f"spanning tree: {time.time()-start:.03f}")
+
     if extra_edges:
         for edge in edges:
             if random.randint(1, 10) == 1 and edge not in result:
                 # 10% chance to add removed edge back into the result
                 result.append(edge)
+
     hallway: Hallway
     edge: Edge
     random.shuffle(result)
@@ -70,7 +76,9 @@ def generate_dungeon(map: Map, extra_edges=True) -> list:
         map.add_hallway(hallway)
         added_hallways.append(hallway)
     print(f"calculating shortest paths: {time.time()-start:.03f}")
+
     start = time.time()
     print(f"adding hallways to map: {time.time()-start:.03f}")
     print("Generating done! \n")
+
     return added_hallways

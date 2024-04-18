@@ -1,3 +1,5 @@
+"""Various functions and constants that are used by other modules."""
+
 from entities.geometry import Vertex
 
 # Default arguments used for generating the dungeon.
@@ -15,12 +17,12 @@ PATH_WEIGHT = 0.9
 EMPTY_WEIGHT = 1
 
 
-def validate_int(name: str, input: str) -> int:
+def validate_int(name: str, checked: str) -> int:
     """Checks that an input is not empty, can be converted to an integer, and is not less than 1.
 
     Args:
         name (str): Used to identify the problem in error message.
-        input (str): The input string to validate.
+        checked (str): The input string to validate.
 
     Raises:
         ValueError: If any of the checks fail.
@@ -28,15 +30,15 @@ def validate_int(name: str, input: str) -> int:
     Returns:
         int: Input value as an integer.
     """
-    if input.strip() == "":
+    if checked.strip() == "":
         raise ValueError(f"{name} must not be empty.")
     try:
-        input = int(input)
+        checked = int(checked)
     except ValueError as exception:
         raise ValueError(f"{name} must be a number.") from exception
-    if input < 1:
+    if checked < 1:
         raise ValueError(f"{name} cannot be less than 1.")
-    return input
+    return checked
 
 
 def convert_rooms_to_x_y_coords(rooms: list) -> list:
