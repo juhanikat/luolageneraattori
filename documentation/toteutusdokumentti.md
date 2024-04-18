@@ -9,7 +9,9 @@ Lopuksi ohjelma näyttää luodun kartan käyttäjälle matplotlib-kirjaston tek
 
 ## Puutteet
 
-Generoidut käytävät ovat usein täydellisen suoria, joka ei välttämättä vastaa mielikuvaa luolastosta. Ohjelman käyttämä reitinhakualgoritmi on myös liian hidas suurilla kartoilla.
+- Generoidut käytävät ovat usein täydellisen suoria, joka ei välttämättä vastaa mielikuvaa luolastosta.
+- Ohjelman käyttämä reitinhakualgoritmi on liian hidas suurilla kartoilla. Esimerkiksi 1000x1000 kokoisen kartan generoiminen kestää käytännössä ikuisesti.
+- Jos kartan koko on liian pieni, ohjelma voi epäonnistua asettamaan huoneet kartalle jolloin se ilmoittaa tästä virheviestillä käyttäjälle. Tämä johtuu siitä että ohjelma kokeilee asettaa huoneita eri puolille karttaa satunnaisesti, ja lopettaa yrittämisen tietyn epäonnistumisten määrän jälkeen. Tämä on ärsyttävää käyttäjälle, eikä ole selvää kuinka suuri kartta käyttäjän täytyy luoda että huoneet mahtuvat kartalle.
 
 ## Apuvälineet
 

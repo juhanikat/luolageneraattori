@@ -8,7 +8,8 @@ from utilities import (DEFAULT_ARGS, EMPTY_WEIGHT, PATH_WEIGHT, ROOM_WEIGHT,
 
 from .room import Room
 
-ROOM_PLACEMENT_TRIES = 2000
+ROOM_PLACEMENT_TRIES = 500
+ROOM_PLACEMENT_STRIKES = 10
 
 
 class RoomSizeError(Exception):
@@ -113,10 +114,21 @@ class Map:
         self.room_max_size = room_max_size
         self.room_exact_size = room_exact_size
 
-    def check_parallel(self, vertex1: Vertex, vertex2: Vertex, vertex3: Vertex):
+    def check_parallel(self, vertex1: Vertex, vertex2: Vertex, vertex3: Vertex) -> bool:
+        """Returns true if all three vertices are on the same line, ro False otherwise.
+        Used when there are only three rooms, because if all of them are on the same line
+        then the algorithm does not work properly.
+
+        Args:
+            vertex1 (Vertex): First vertex.
+            vertex2 (Vertex): Second vertex.
+            vertex3 (Vertex): Third vertex.
+
+        Returns:
+            bool: True if given vertices are on the same line, or False otherwise.
+        """
         formula = vertex3.x * vertex2.y + vertex1.x * vertex3.y + vertex2.x * vertex1.y - \
             vertex1.x * vertex2.y - vertex3.x * vertex1.y - vertex2.x * vertex3.y
-        print(f"formula: {formula}")
         return formula == 0
 
     def get_size(self) -> tuple:
@@ -201,7 +213,7 @@ class Map:
                 self.create_rooms()
                 tries = 0
                 strikes += 1
-                if strikes == 5:
+                if strikes == ROOM_PLACEMENT_STRIKES:
                     raise RoomPlacementError(
                         "Rooms cannot be placed in reasonable time, " +
                         "try adjusting room amount or room size.")
@@ -217,10 +229,9 @@ class Map:
                         parallel = self.check_parallel(
                             vertex1, vertex2, vertex3)
                         if parallel:
-                            print("parallel")
                             self.reset_placement()
                             strikes += 1
-                            if strikes == 5:
+                            if strikes == ROOM_PLACEMENT_STRIKES:
                                 raise RoomPlacementError(
                                     "Rooms cannot be placed in reasonable time, " +
                                     "try adjusting room amount or room size.")

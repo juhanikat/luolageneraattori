@@ -40,7 +40,7 @@ def generate_dungeon(map: Map, extra_edges=True) -> list:
             map.place_rooms()
             x_y_coords = convert_rooms_to_x_y_coords(map.placed_rooms)
         tries += 1
-        if tries == 5:
+        if tries == 10:
             raise NoTrianglesError("Could not triangulate.")
     print(f"placing rooms and bowyer-watson: {time.time()-start:.03f}")
 
