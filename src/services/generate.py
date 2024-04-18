@@ -29,23 +29,20 @@ def generate_dungeon(map: Map, extra_edges=True) -> list:
         list: The hallways that make up the path.
     """
 
-    map.place_rooms()
-
-    start = time.time()
-    x_y_coords = convert_rooms_to_x_y_coords(map.placed_rooms)
-    print(f"convert rooms to x, y: {time.time()-start:.03f}")
-
     start = time.time()
     triangles = []
     tries = 0
+    map.place_rooms()
+    x_y_coords = convert_rooms_to_x_y_coords(map.placed_rooms)
     while not triangles:
         triangles = bowyer_watson(x_y_coords)
         if not triangles:
             map.place_rooms()
+            x_y_coords = convert_rooms_to_x_y_coords(map.placed_rooms)
         tries += 1
         if tries == 5:
             raise NoTrianglesError("Could not triangulate.")
-    print(f"bowyer-watson: {time.time()-start:.03f}")
+    print(f"placing rooms and bowyer-watson: {time.time()-start:.03f}")
 
     edges = []
     for triangle in triangles:

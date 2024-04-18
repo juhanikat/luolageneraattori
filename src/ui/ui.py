@@ -8,7 +8,7 @@ from matplotlib.patches import Rectangle
 from entities.map import (Map, RoomAmountError, RoomPlacementError,
                           RoomSizeError)
 from entities.room import Room
-from services.generate import generate_dungeon
+from services.generate import NoTrianglesError, generate_dungeon
 from utilities import DEFAULT_ARGS, validate_int
 
 
@@ -49,8 +49,7 @@ class UI:
             self.map = Map(map_size_x, map_size_y, amount, room_min_size=room_min_size,
                            room_max_size=room_max_size)
             edges = generate_dungeon(self.map)
-        except (ValueError, RoomAmountError, RoomSizeError, RoomPlacementError) as exception:
-            print(exception)
+        except (ValueError, RoomAmountError, RoomSizeError, RoomPlacementError, NoTrianglesError) as exception:
             self.error_message.config(text=exception)
             self.change_run_button_text("Run")
             return
@@ -118,13 +117,18 @@ class UI:
 def display_map(map: Map):
     start = time.time()
     pyplot.style.use("bmh")
+    map_width = map.get_size()[0]
+    map_height = map.get_size()[1]
     figure = pyplot.figure()
+    figure.canvas.manager.set_window_title(
+        f"Dungeon {map_width}x{map_height}, {len(map.placed_rooms)} rooms")
     axis = figure.add_subplot(1, 1, 1)
     axis.set_aspect('equal')
-    axis.set_xlim(0, map.get_size()[0])
-    axis.set_ylim(0, map.get_size()[1])
-    major_ticks = np.arange(0, map.get_size()[0], 20)
-    minor_ticks = np.arange(0, map.get_size()[1], 1)
+    axis.set_xlim(0, map_width)
+    axis.set_ylim(0, map_height)
+    larger_dimension = max(map_width, map_height)
+    major_ticks = np.arange(0, larger_dimension, 20)
+    minor_ticks = np.arange(0, larger_dimension, 1)
     axis.set_xticks(major_ticks)
     axis.set_xticks(minor_ticks, minor=True)
     axis.set_yticks(major_ticks)

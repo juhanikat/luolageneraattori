@@ -46,7 +46,7 @@ def add_vertex_and_update(vertex: Vertex, triangles: list) -> list:
         list: The updated triangles.
     """
     edges = []
-    valid_triangles = []  # triangles that won't be deleted
+    valid_triangles = []
 
     triangle: Triangle
     for triangle in triangles:

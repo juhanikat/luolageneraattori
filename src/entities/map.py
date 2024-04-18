@@ -180,9 +180,7 @@ class Map:
         return room
 
     def place_rooms(self) -> None:
-        """Creates rooms and places them on the map.
-
-
+        """Places rooms on the map.
 
         Raises:
             RoomSizeError: Raised if room size parameters are invalid.
