@@ -50,12 +50,12 @@ class UI:
                            room_max_size=room_max_size)
             edges = generate_dungeon(self.map)
         except (ValueError, RoomAmountError, RoomSizeError, RoomPlacementError, NoTrianglesError) as exception:
-            self.error_message.config(text=exception)
+            self.error_message.config(text=exception, fg="red")
             self.change_run_button_text("Run")
             return
         if not edges:
             self.error_message.config(
-                text="Dungeon cannot be generated with these parameters, try increasing amount of rooms.")
+                text="Dungeon cannot be generated with these parameters, try increasing amount of rooms.", fg="red")
             self.change_run_button_text("Run")
             return
 
@@ -89,6 +89,9 @@ class UI:
             self.root, text=f'X size of map (default: {DEFAULT_ARGS["map_size_x"]})')
         map_size_y_label = tk.Label(
             self.root, text=f'Y size of map (default: {DEFAULT_ARGS["map_size_y"]})')
+        map_size_warning_label = tk.Label(
+            self.root, text="Large maps (over 500x500) " +
+            "with a large amount of rooms are really slow to generate.")
 
         amount_entry = tk.Entry(self.root, textvariable=amount)
         room_min_size_entry = tk.Entry(self.root, textvariable=room_min_size)
@@ -107,6 +110,7 @@ class UI:
         map_size_x_entry.pack()
         map_size_y_label.pack()
         map_size_y_entry.pack()
+        map_size_warning_label.pack()
 
         self.run_button.pack()
 

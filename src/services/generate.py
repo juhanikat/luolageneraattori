@@ -7,6 +7,8 @@ from entities.hallway import Hallway
 from entities.map import Map
 from utilities import convert_rooms_to_x_y_coords
 
+TRIANGULATION_TRIES = 10
+
 
 class NoTrianglesError(Exception):
     """Raised if bowyer-watson algorithm could not generate the triangulation."""
@@ -40,7 +42,7 @@ def generate_dungeon(map: Map, extra_edges=True) -> list:
             map.place_rooms()
             x_y_coords = convert_rooms_to_x_y_coords(map.placed_rooms)
         tries += 1
-        if tries == 10:
+        if tries == TRIANGULATION_TRIES:
             raise NoTrianglesError("Could not triangulate.")
     print(f"placing rooms and bowyer-watson: {time.time()-start:.03f}")
 

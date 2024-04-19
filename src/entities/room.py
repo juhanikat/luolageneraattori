@@ -1,8 +1,8 @@
-class Room():
-    """Represents a room on the map. Rooms have a length, a width and a location (x, y coordinate pair).
-    """
+class Room:
+    """Represents a room on the map. 
+    Rooms have a length, a width and a location (x, y coordinate pair)."""
 
-    def __init__(self, size_x, size_y) -> None:
+    def __init__(self, size_x: int, size_y: int) -> None:
         self.size_x = size_x
         self.size_y = size_y
         self.area = size_x*size_y
