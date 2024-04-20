@@ -2,8 +2,6 @@
 import heapq
 import random
 
-from matplotlib import pyplot
-
 from entities.cell import Cell
 from entities.geometry import Edge, Triangle, Vertex
 from entities.map import Map

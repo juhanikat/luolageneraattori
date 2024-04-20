@@ -55,7 +55,8 @@ class Edge:
 
 
 class Triangle:
-    # TODO
+    """A triangle connecting three rooms together.
+    """
 
     def __init__(self, v0: Vertex, v1: Vertex, v2: Vertex) -> None:
         """A triangle between 3 vertices.

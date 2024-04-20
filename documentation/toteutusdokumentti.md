@@ -7,6 +7,12 @@ Kun käyttäjä painaa Run-nappia, ohjelma ensiksi generoi kartalle käyttäjän
 Sen jälkeen tiedostossa services/generate.py oleva funktio käyttää projektissa olevia algoritmeja (tiedostossa algorithms.py) luodakseen huoneiden väliset käytävät.
 Lopuksi ohjelma näyttää luodun kartan käyttäjälle matplotlib-kirjaston tekemän graafin kautta. Käytävät yhdistyvät huoneiden vasempaan alakulmaan. Ohjelman käyttöliittymään ja graafin piirtämiseen liittyvä koodi on ui/ui.py tiedostossa.
 
+## Aikavaativuudet
+
+- Bowyer-Watsonin algoritmin aikavaativuus on O(n^2)
+- Spanning Tree algoritmin aikavaativuus on O(n^2)
+- A\* algoritmin aikavaativuus on O(b^d), jossa b on keskimääräinen polkujen määrä yhdestä solmusta (tämän ohjelman tapauksessa 4) ja d on lyhimmän polun pituus.
+
 ## Puutteet
 
 - Generoidut käytävät ovat usein täydellisen suoria, joka ei välttämättä vastaa mielikuvaa luolastosta.

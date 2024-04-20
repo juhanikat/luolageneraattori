@@ -163,10 +163,11 @@ class Map:
         room_x, room_y = room.bottom_left_coords
         other_room: Room
         for other_room in self.placed_rooms:
-            if other_room is not room and (other_room.covers((room_x - 1, room_y)) or
-                                           other_room.covers((room_x, room_y - 1)) or
-                                           other_room.covers((room_x + room.size_x + 1, room_y + room.size_y)) or
-                                           other_room.covers((room_x + room.size_x, room_y + room.size_y + 1))):
+            if other_room is not room and (
+                    other_room.covers((room_x - 1, room_y)) or
+                    other_room.covers((room_x, room_y - 1)) or
+                    other_room.covers((room_x + room.size_x + 1, room_y + room.size_y)) or
+                    other_room.covers((room_x + room.size_x, room_y + room.size_y + 1))):
                 return True
         return False
 
