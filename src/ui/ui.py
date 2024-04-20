@@ -119,7 +119,6 @@ class UI:
 
 
 def display_map(map: Map):
-    start = time.time()
     pyplot.style.use("bmh")
     map_width = map.get_size()[0]
     map_height = map.get_size()[1]
@@ -152,5 +151,4 @@ def display_map(map: Map):
             axis.add_patch(square)
     axis.add_patch(Rectangle((0, 0), map.get_size()[
                    0], map.get_size()[1], alpha=1, fill=True, edgecolor=(1, 0, 1, 0.6), facecolor="none"))
-    print(f"drawing figure: {time.time() - start:.03f}")
     pyplot.show()
