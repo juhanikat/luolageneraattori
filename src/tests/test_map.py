@@ -53,27 +53,6 @@ def test_map_size_is_correct():
     assert map.get_size()[1] == 1000
 
 
-def test_distance_between_two_rooms_is_correct():
-    # TODO
-    return
-    map = Map(100, 100, 3)
-    room1 = Room(2, 2)
-    room1.bottom_left_coords = (0, 0)
-    map.placed_rooms.append(room1)
-    room2 = Room(2, 2)
-    room2.bottom_left_coords = (2, 2)
-    map.placed_rooms.append(room2)
-    print(room1.get_all_coords())
-    print(room2.get_all_coords())
-    assert map.check_grouped_rooms(room1) == False
-    room3 = Room(2, 2)
-    room3.bottom_left_coords = (1, 2)
-    map.placed_rooms.append(room3)
-    print(room1.get_all_coords())
-    print(room3.get_all_coords())
-    assert map.check_grouped_rooms(room1) == True
-
-
 def test_max_room_size_cannot_be_larger_than_map_size():
     with pytest.raises(RoomSizeError):
         Map(1000, 1000, 3, room_max_size=1001).place_rooms()

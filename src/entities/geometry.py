@@ -13,12 +13,13 @@ class Vertex:
     def __init__(self, x, y) -> None:
         self.x = x
         self.y = y
+        self.id = uuid.uuid4()
 
     def __eq__(self, other) -> bool:
         return self.x == other.x and self.y == other.y
 
     def __str__(self) -> str:
-        return f"({self.x}, {self.y})"
+        return f"Vertex ({self.x}, {self.y})"
 
     def __repr__(self) -> str:
         return f"Vertex ({self.x}, {self.y})"

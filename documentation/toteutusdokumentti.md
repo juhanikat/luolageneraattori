@@ -10,7 +10,7 @@ Lopuksi ohjelma näyttää luodun kartan käyttäjälle matplotlib-kirjaston tek
 ## Aikavaativuudet
 
 - Bowyer-Watsonin algoritmin aikavaativuus on O(n^2)
-- Spanning Tree algoritmin aikavaativuus on O(n^2)
+- Kruskalin algoritmin aikavaativuus on O(n^2)
 - A\* algoritmin aikavaativuus on O(b^d), jossa b on keskimääräinen polkujen määrä yhdestä solmusta (tämän ohjelman tapauksessa 4) ja d on lyhimmän polun pituus.
 
 ## Puutteet
@@ -21,4 +21,4 @@ Lopuksi ohjelma näyttää luodun kartan käyttäjälle matplotlib-kirjaston tek
 
 ## Apuvälineet
 
-Projektissa olevan Spanning Tree-algoritmin ja Dijkstran algoritmin tekemiseen on käytetty TIRA 2024 kevät-kurssin materiaaleja. Projektissa ei ole käytetty ChatGPT:tä tai muita laajoja kielimalleja.
+Projektissa olevan Kruskalin algoritmin ja Dijkstran algoritmin tekemiseen on käytetty TIRA 2024 kevät-kurssin materiaaleja. Projektissa ei ole käytetty ChatGPT:tä tai muita laajoja kielimalleja.

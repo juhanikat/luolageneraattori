@@ -1,7 +1,6 @@
 import random
 
-from algorithms import (Edge, bowyer_watson, shortest_path_a_star,
-                        shortest_path_dijkstra, spanning_tree)
+from algorithms import Edge, bowyer_watson, kruskal, shortest_path_a_star
 from entities.hallway import Hallway
 from entities.map import Map
 from utilities import convert_rooms_to_x_y_coords
@@ -43,18 +42,27 @@ def generate_dungeon(map: Map, extra_edges=True) -> list:
         if tries == TRIANGULATION_TRIES:
             raise NoTrianglesError("Could not triangulate.")
 
+    vertices = []
     edges = []
     for triangle in triangles:
+        vertices.append(triangle.edge0.v0)
+        vertices.append(triangle.edge0.v1)
+        vertices.append(triangle.edge1.v0)
+        vertices.append(triangle.edge1.v1)
+        vertices.append(triangle.edge2.v0)
+        vertices.append(triangle.edge2.v1)
         edges.append(triangle.edge0)
         edges.append(triangle.edge1)
         edges.append(triangle.edge2)
-    result = spanning_tree(edges)
+
+    result = kruskal(vertices, edges)
 
     if extra_edges:
         for edge in edges:
             if random.randint(1, 100) <= EXTRA_EDGE_CHANCE and edge not in result:
                 # chance to add removed edge back into the result
                 result.append(edge)
+                pass
 
     hallway: Hallway
     edge: Edge

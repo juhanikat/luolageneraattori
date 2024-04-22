@@ -151,26 +151,6 @@ class Map:
         """
         return self.cells.get(coords, None)
 
-    def check_grouped_rooms(self, room: Room) -> bool:
-        """Returns True if any placed rooms are adjacent to the given room, and False otherwise. 
-
-        Args:
-            room (Room): The room that is checked.
-
-        Returns:
-            bool: True if a room is adjacent to the checked room, and False otherwise.
-        """
-        room_x, room_y = room.bottom_left_coords
-        other_room: Room
-        for other_room in self.placed_rooms:
-            if other_room is not room and (
-                    other_room.covers((room_x - 1, room_y)) or
-                    other_room.covers((room_x, room_y - 1)) or
-                    other_room.covers((room_x + room.size_x + 1, room_y + room.size_y)) or
-                    other_room.covers((room_x + room.size_x, room_y + room.size_y + 1))):
-                return True
-        return False
-
     def create_rooms(self) -> None:
         """Creates rooms and places them in self.created_rooms."""
         rooms = []

@@ -150,6 +150,47 @@ def spanning_tree(edges: list) -> list:
     return search(edges[0], [], next_to, [])
 
 
+class UnionFind:
+    def __init__(self, nodes):
+        self.link = {node.id: None for node in nodes}
+        self.size = {node.id: 1 for node in nodes}
+
+    def find(self, x: Vertex):
+        while self.link[x.id]:
+            x = self.link[x.id]
+        return x
+
+    def union(self, a: Vertex, b: Vertex):
+        a = self.find(a)
+        b = self.find(b)
+        if a == b:
+            return
+
+        if self.size[a.id] > self.size[b.id]:
+            a, b = b, a
+        self.link[a.id] = b
+        self.size[b.id] += self.size[a.id]
+
+
+def kruskal(nodes: list, edges: list) -> list:
+    edges.sort(key=lambda x: x.length)
+    uf = UnionFind(nodes)
+    edges_count = 0
+    tree_weight = 0
+    result = []
+
+    edge: Edge
+    for edge in edges:
+        node_a, node_b, weight = edge.v0, edge.v1, edge.length
+        if uf.find(node_a) != uf.find(node_b):
+            uf.union(node_a, node_b)
+            edges_count += 1
+            tree_weight += weight
+            result.append(edge)
+
+    return result
+
+
 def shortest_path_dijkstra(map: Map, start_cell: Cell, end_cell: Cell) -> list:
     """Copied from TIRA 2024 course material with some changes. \n
     Calculates the shortest path between start_cell and end_cell. 

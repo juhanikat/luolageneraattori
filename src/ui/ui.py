@@ -44,6 +44,7 @@ class UI:
             room_max_size = validate_int("Maximum room size", room_max_size)
             map_size_x = validate_int("Map size x", map_size_x)
             map_size_y = validate_int("Map size y", map_size_y)
+            self.error_message.config(text="")
             self.change_run_button_text("Loading...")
             self.root.update_idletasks()
             self.map = Map(map_size_x, map_size_y, amount, room_min_size=room_min_size,
@@ -119,7 +120,7 @@ class UI:
 
 
 def display_map(map: Map):
-    pyplot.style.use("bmh")
+    pyplot.style.use("Solarize_Light2")
     map_width = map.get_size()[0]
     map_height = map.get_size()[1]
     figure = pyplot.figure()
@@ -143,11 +144,11 @@ def display_map(map: Map):
     room: Room
     for room in map.placed_rooms:
         rectangle = Rectangle(room.bottom_left_coords,
-                              room.size_x, room.size_y, fc=(1, 0, 0, 0.5), ec=(0, 0, 0, 0.1))
+                              room.size_x, room.size_y, fc=(0.3, 0.3, 0.3, 1))
         axis.add_patch(rectangle)
     for hallway in map.added_hallways:
         for coord in hallway.coords:
-            square = Rectangle(coord, 1, 1, fc=(0, 1, 0, 0.5))
+            square = Rectangle(coord, 1, 1, fc=(1, 0.4, 0.4, 1))
             axis.add_patch(square)
     axis.add_patch(Rectangle((0, 0), map.get_size()[
                    0], map.get_size()[1], alpha=1, fill=True, edgecolor=(1, 0, 1, 0.6), facecolor="none"))

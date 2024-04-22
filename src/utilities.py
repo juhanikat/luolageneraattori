@@ -11,9 +11,9 @@ DEFAULT_ARGS = {
     "map_size_y": "50"
 }
 
-# Weights given to ifferent types of cells on the map.
+# Weights given to different types of cells on the map.
 ROOM_WEIGHT = 3
-PATH_WEIGHT = 0.9
+PATH_WEIGHT = 0.95
 EMPTY_WEIGHT = 1
 
 

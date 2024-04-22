@@ -5,7 +5,7 @@ Testit voidaan ajaa suorittamalla komento `poetry run invoke test` projektin juu
 Algoritmeja:
 
 - Bowyer-Watsonin algoritmia on testattu muun muassa varmistamalla, että kolme huonetta muodostaa aina keskenään kolmion, paitsi jos kaikki huoneet ovat samalla x- tai y-koordinaatilla.
-- Virittävää puuta testataan varmistamalla että kolmen huoneen välinen kolmio muuttuu kahdeksi poluksi, ja neljän huoneen välinen suorakulmio muuttuu kolmeksi poluksi. Lisäksi varmistetaan, ettei lineaarinen polku muutu miksikään, koska sellainen algoritmin on tarkoitus tuottaa.
+- Kruskalin algoritmia testataan varmistamalla että kolmen huoneen välinen kolmio muuttuu kahdeksi poluksi, ja neljän huoneen välinen suorakulmio muuttuu kolmeksi poluksi. Lisäksi varmistetaan, ettei lineaarinen polku muutu miksikään, koska sellainen algoritmin on tarkoitus tuottaa.
 - A\*- ja Dijkstran algoritmia testataan varmistamalla, että ne laskevat lyhyimmän reitin pituuden kartalla jossa ei ole mitään, sekä kartalla jossa reitin tiellä on huoneita.
 - Room-luokkaa testataan varmistamalla että huoneen pinta-ala kerrotaan oikein ja että luokan get_all_coords() metodi antaa kaikki huoneen peittämät koordinaatit.
 - Map-luokkaa testataan muun muassa varmistamalla että luokan metodit lisäävät huoneet oikein luokan tietorakenteisiin, ja että konstruktorille ei voi antaa vääränlaisia parametrejä.
