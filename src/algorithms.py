@@ -218,7 +218,7 @@ def shortest_path_a_star(map: Map, start_cell: Cell, end_cell: Cell) -> list:
     """
 
     def heuristic(cell1: Cell, cell2: Cell):
-        return abs((cell1.coords[0] - cell2.coords[0] + 5) + (cell1.coords[1] - cell2.coords[1]))
+        return abs((cell1.coords[0] - cell2.coords[0]) + (cell1.coords[1] - cell2.coords[1]))
 
     cells = map.cells.values()
     distances = {}
