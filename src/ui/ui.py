@@ -1,15 +1,19 @@
-import time
 import tkinter as tk
 
 import numpy as np
 from matplotlib import pyplot
 from matplotlib.patches import Rectangle
 
+from entities.hallway import Hallway
 from entities.map import (Map, RoomAmountError, RoomPlacementError,
                           RoomSizeError)
 from entities.room import Room
 from services.generate import NoTrianglesError, generate_dungeon
 from utilities import DEFAULT_ARGS, validate_int
+
+MAX_MAP_SIZE_X = 500
+MAX_MAP_SIZE_Y = 500
+MAX_AMOUNT_OF_ROOMS = 200
 
 
 class UI:
@@ -23,6 +27,9 @@ class UI:
 
     def change_run_button_text(self, text: str):
         self.run_button_text.set(text)
+
+    def change_error_text(self, text: str):
+        self.error_message.config(text=text, fg="red")
 
     def handle_button_click(self, amount,
                             room_min_size,
@@ -40,29 +47,35 @@ class UI:
             map_size_y = DEFAULT_ARGS["map_size_y"]
         try:
             amount = validate_int("Amount", amount)
+            if amount > MAX_AMOUNT_OF_ROOMS:
+                raise ValueError(
+                    f"The maximum amount of rooms is {MAX_AMOUNT_OF_ROOMS}.")
             room_min_size = validate_int("Minimum room size", room_min_size)
             room_max_size = validate_int("Maximum room size", room_max_size)
             map_size_x = validate_int("Map size x", map_size_x)
             map_size_y = validate_int("Map size y", map_size_y)
-            self.error_message.config(text="")
+            if map_size_x * map_size_y > MAX_MAP_SIZE_X * MAX_MAP_SIZE_Y:
+                raise ValueError(
+                    f"Map size cannot be larger than {MAX_MAP_SIZE_X}x{MAX_MAP_SIZE_Y}.")
+            self.change_error_text("")
             self.change_run_button_text("Loading...")
             self.root.update_idletasks()
             self.map = Map(map_size_x, map_size_y, amount, room_min_size=room_min_size,
                            room_max_size=room_max_size)
             edges = generate_dungeon(self.map)
         except (ValueError, RoomAmountError, RoomSizeError, RoomPlacementError, NoTrianglesError) as exception:
-            self.error_message.config(text=exception, fg="red")
+            self.change_error_text(exception)
             self.change_run_button_text("Run")
             return
         if not edges:
-            self.error_message.config(
-                text="Dungeon cannot be generated with these parameters, try increasing amount of rooms.", fg="red")
+            self.change_error_text(
+                "Dungeon cannot be generated with these parameters, try increasing amount of rooms.")
             self.change_run_button_text("Run")
             return
 
         display_map(self.map)
         self.change_run_button_text("Run")
-        self.error_message.config(text="")
+        self.change_error_text("")
 
     def create_ui(self):
         amount = tk.StringVar(self.root)
@@ -81,19 +94,16 @@ class UI:
                                         map_size_x.get(),
                                         map_size_y.get()))
 
-        amount_label = tk.Label(self.root, text="Amount of rooms")
+        amount_label = tk.Label(
+            self.root, text=f"Amount of rooms (max: {MAX_AMOUNT_OF_ROOMS})")
         room_min_size_label = tk.Label(
             self.root, text=f'Minimum room size (default: {DEFAULT_ARGS["room_min_size"]})')
         room_max_size_label = tk.Label(
             self.root, text=f'Maximum room size (default: {DEFAULT_ARGS["room_max_size"]})')
         map_size_x_label = tk.Label(
-            self.root, text=f'X size of map (default: {DEFAULT_ARGS["map_size_x"]})')
+            self.root, text=f'X size of map (default: {DEFAULT_ARGS["map_size_x"]}, max: {MAX_MAP_SIZE_X})')
         map_size_y_label = tk.Label(
-            self.root, text=f'Y size of map (default: {DEFAULT_ARGS["map_size_y"]})')
-        map_size_warning_label = tk.Label(
-            self.root, text="Large maps (over 500x500) " +
-            "with a large amount of rooms are really slow to generate.")
-
+            self.root, text=f'Y size of map (default: {DEFAULT_ARGS["map_size_y"]}, max: {MAX_MAP_SIZE_Y})')
         amount_entry = tk.Entry(self.root, textvariable=amount)
         room_min_size_entry = tk.Entry(self.root, textvariable=room_min_size)
         room_max_size_entry = tk.Entry(self.root, textvariable=room_max_size)
@@ -111,7 +121,6 @@ class UI:
         map_size_x_entry.pack()
         map_size_y_label.pack()
         map_size_y_entry.pack()
-        map_size_warning_label.pack()
 
         self.run_button.pack()
 
@@ -141,15 +150,21 @@ def display_map(map: Map):
     axis.grid(which='minor', alpha=0.2)
     axis.grid(which='major', alpha=0.5)
 
-    room: Room
-    for room in map.placed_rooms:
-        rectangle = Rectangle(room.bottom_left_coords,
-                              room.size_x, room.size_y, fc=(0.3, 0.3, 0.3, 1))
-        axis.add_patch(rectangle)
+    hallway: Hallway
     for hallway in map.added_hallways:
         for coord in hallway.coords:
             square = Rectangle(coord, 1, 1, fc=(1, 0.4, 0.4, 1))
             axis.add_patch(square)
+
+    room: Room
+    for room in map.placed_rooms:
+        rectangle = Rectangle(room.bottom_left_coords,
+                              room.size_x, room.size_y, fc=(0.3, 0.3, 0.3, 1))
+        door = Rectangle(room.bottom_left_coords, 1, 1, fc=(0.3, 0.3, 0.7, 1))
+        axis.add_patch(rectangle)
+        axis.add_patch(door)
+
+    # Adds a rectangle showing the map's limits
     axis.add_patch(Rectangle((0, 0), map.get_size()[
                    0], map.get_size()[1], alpha=1, fill=True, edgecolor=(1, 0, 1, 0.6), facecolor="none"))
     pyplot.show()

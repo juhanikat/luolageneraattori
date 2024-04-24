@@ -6,7 +6,7 @@ from entities.map import Map
 from utilities import convert_rooms_to_x_y_coords
 
 TRIANGULATION_TRIES = 10
-EXTRA_EDGE_CHANCE = 10
+EXTRA_EDGE_CHANCE = 5
 
 
 class NoTrianglesError(Exception):
@@ -17,8 +17,8 @@ def generate_dungeon(map: Map, extra_edges=True) -> list:
     """Generates a path through the dungeon that visits every room.
     This is done by: \n
     1. Creating a delaunay triangulation using the rooms on the map.
-    2. Creating a spanning tree from the triangulation, removing unnecessary edges.
-    3. Randomly adding some removed edges back into the spanning tree, 
+    2. Creating a minimum spanning tree from the triangulation, removing unnecessary edges.
+    3. Randomly adding some removed edges back into the graph, 
     to make the resulting hallways look more natural.
     4. Converting the edges into hallways.
     5. Adding these hallways to the map.
@@ -40,7 +40,7 @@ def generate_dungeon(map: Map, extra_edges=True) -> list:
             x_y_coords = convert_rooms_to_x_y_coords(map.placed_rooms)
         tries += 1
         if tries == TRIANGULATION_TRIES:
-            raise NoTrianglesError("Could not triangulate.")
+            raise NoTrianglesError("Could not triangulate, try again.")
 
     vertices = []
     edges = []
@@ -62,7 +62,6 @@ def generate_dungeon(map: Map, extra_edges=True) -> list:
             if random.randint(1, 100) <= EXTRA_EDGE_CHANCE and edge not in result:
                 # chance to add removed edge back into the result
                 result.append(edge)
-                pass
 
     hallway: Hallway
     edge: Edge

@@ -151,6 +151,10 @@ def spanning_tree(edges: list) -> list:
 
 
 class UnionFind:
+    """Used by kruskal's algorithm.
+    Copied from TIRA 2024 course material.
+    """
+
     def __init__(self, nodes):
         self.link = {node.id: None for node in nodes}
         self.size = {node.id: 1 for node in nodes}
@@ -173,6 +177,15 @@ class UnionFind:
 
 
 def kruskal(nodes: list, edges: list) -> list:
+    """Creates a minimum spanning tree.
+
+    Args:
+        nodes (list): List of nodes.
+        edges (list): List of edges connecting the nodes.
+
+    Returns:
+        list: The minimum spanning tree.
+    """
     edges.sort(key=lambda x: x.length)
     uf = UnionFind(nodes)
     edges_count = 0
@@ -191,74 +204,6 @@ def kruskal(nodes: list, edges: list) -> list:
     return result
 
 
-def shortest_path_dijkstra(map: Map, start_cell: Cell, end_cell: Cell) -> list:
-    """Copied from TIRA 2024 course material with some changes. \n
-    Calculates the shortest path between start_cell and end_cell. 
-    Going through rooms is expensive, and going through existing hallways is cheap.
-
-    Args:
-        start_cell (Cell): The cell where the algorithm starts.
-        end_cell (Cell): The cell where the algorithm ends.
-
-    Returns:
-        list: A list of coordinate tuples that is the shortest path between the 2 cells.
-    """
-    cells = map.cells.values()
-    distances = {}
-    for cell in cells:
-        distances[cell] = float("inf")
-
-    distances[start_cell] = 0
-    previous = {}
-    previous[start_cell] = None
-
-    queue = []
-    heapq.heappush(queue, (0, start_cell))
-
-    visited = set()
-    while queue:
-        cell1 = heapq.heappop(queue)[1]
-        if cell1 is end_cell:
-            break
-        if cell1 in visited:
-            continue
-        visited.add(cell1)
-
-        neighbor1 = map.get_cell((cell1.coords[0], cell1.coords[1] + 1))
-        neighbor2 = map.get_cell(
-            (cell1.coords[0], cell1.coords[1] - 1))
-        neighbor3 = map.get_cell(
-            (cell1.coords[0] + 1, cell1.coords[1]))
-        neighbor4 = map.get_cell(
-            (cell1.coords[0] - 1, cell1.coords[1]))
-        neighbors = [neighbor1, neighbor2, neighbor3, neighbor4]
-        # possibly makes hallway generation more natural
-        random.shuffle(neighbors)
-
-        for cell2 in neighbors:
-            if cell2 is None:
-                continue
-            weight = cell2.weight
-            new_distance = distances[cell1] + weight
-            if new_distance < distances[cell2]:
-                distances[cell2] = new_distance
-                previous[cell2] = cell1
-                new_pair = (new_distance, cell2)
-                heapq.heappush(queue, new_pair)
-
-    if distances[end_cell] == float("inf"):
-        return None
-
-    path = []
-    cell = end_cell
-    while cell:
-        path.append(cell.coords)
-        cell = previous[cell]
-
-    path.reverse()
-    return path
-
-
 def shortest_path_a_star(map: Map, start_cell: Cell, end_cell: Cell) -> list:
     """Copied from TIRA 2024 course material with some changes. \n
     Calculates the shortest path between start_cell and end_cell. 
@@ -273,7 +218,7 @@ def shortest_path_a_star(map: Map, start_cell: Cell, end_cell: Cell) -> list:
     """
 
     def heuristic(cell1: Cell, cell2: Cell):
-        return abs((cell1.coords[0] - cell2.coords[0]) + (cell1.coords[1] - cell2.coords[1]))
+        return abs((cell1.coords[0] - cell2.coords[0] + 5) + (cell1.coords[1] - cell2.coords[1]))
 
     cells = map.cells.values()
     distances = {}

@@ -6,7 +6,7 @@ Projektin kieli on Python. Osaan myös JavaScriptiä.
 
 Aihe: luolastojen generointi 
 
-Aiheeni ydin on luolien generoimiseen käytettävät algoritmit. Ohjelman tarkoitus on luoda satunnainen verkosto huoneita ja niitä yhdistäviä luolia, ja näyttää lopputulos selkeästi ohjelman käyttäjälle. Ohjelmalle voi myöhemmin antaa syötteenä esimerkiksi kuinka monta huonetta verkostossa tulee olla. 
+Aiheeni ydin on luolien generoimiseen käytettävät algoritmit. Käyttäjä antaa ohjelmalle syötteenä kuinka monta huonetta verkostossa tulee olla, kuinka suuria ne ovat ja kuinka iso kartta on. Ohjelma luo satunnaisen verkoston huoneita ja niitä yhdistäviä käytäviä, ja näyttää lopputuloksen selkeästi ohjelman käyttäjälle.
 
 Projektissa toteutettavia algoritmeja ovat muun muassa A*, pienin virittävä puu sekä Bowyer-Watsonin algoritmi. Tavoitteena on, että Bowyer-Watsonin algoritmi toimii O(n^2) ajassa.
 

@@ -8,8 +8,8 @@ from utilities import (DEFAULT_ARGS, EMPTY_WEIGHT, PATH_WEIGHT, ROOM_WEIGHT,
 
 from .room import Room
 
-ROOM_PLACEMENT_TRIES = 500
-ROOM_PLACEMENT_STRIKES = 10
+ROOM_PLACEMENT_TRIES = 700
+ROOM_PLACEMENT_STRIKES = 50
 
 
 class RoomSizeError(Exception):
@@ -207,8 +207,6 @@ class Map:
         while True:
             tries += 1
             if tries >= ROOM_PLACEMENT_TRIES:
-                print(
-                    f"Tried to place room {tries} times, removing all rooms to try again.")
                 self.reset_placement()
                 self.create_rooms()
                 tries = 0
