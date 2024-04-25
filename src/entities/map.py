@@ -3,8 +3,7 @@ import random
 from entities.cell import Cell
 from entities.geometry import Vertex
 from entities.hallway import Hallway
-from utilities import (DEFAULT_ARGS, EMPTY_WEIGHT, PATH_WEIGHT, ROOM_WEIGHT,
-                       convert_rooms_to_vertices)
+from values import DEFAULT_ARGS, EMPTY_WEIGHT, PATH_WEIGHT, ROOM_WEIGHT
 
 from .room import Room
 
@@ -25,6 +24,23 @@ class RoomPlacementError(Exception):
 class RoomAmountError(Exception):
     """Raised if room amount parameter is invalid.
     """
+
+
+def convert_rooms_to_vertices(rooms: list) -> list:
+    """Takes a list of room objects and converts them to vertices.
+
+    Args:
+        rooms (list): Rooms to convert.
+
+    Returns:
+        list: A list of vertices.
+    """
+    vertices = []
+    room: Room
+    for room in rooms:
+        vertices.append(
+            Vertex(room.bottom_left_coords[0], room.bottom_left_coords[1]))
+    return vertices
 
 
 class Map:

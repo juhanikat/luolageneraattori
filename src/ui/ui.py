@@ -9,11 +9,32 @@ from entities.map import (Map, RoomAmountError, RoomPlacementError,
                           RoomSizeError)
 from entities.room import Room
 from services.generate import NoTrianglesError, generate_dungeon
-from utilities import DEFAULT_ARGS, validate_int
+from values import (DEFAULT_ARGS, MAX_AMOUNT_OF_ROOMS, MAX_MAP_SIZE_X,
+                    MAX_MAP_SIZE_Y)
 
-MAX_MAP_SIZE_X = 500
-MAX_MAP_SIZE_Y = 500
-MAX_AMOUNT_OF_ROOMS = 200
+
+def validate_int(name: str, checked: str) -> int:
+    """Checks that an input is not empty, can be converted to an integer, and is not less than 1.
+
+    Args:
+        name (str): Used to identify the problem in error message.
+        checked (str): The input string to validate.
+
+    Raises:
+        ValueError: If any of the checks fail.
+
+    Returns:
+        int: Input value as an integer.
+    """
+    if checked.strip() == "":
+        raise ValueError(f"{name} must not be empty.")
+    try:
+        checked = int(checked)
+    except ValueError as exception:
+        raise ValueError(f"{name} must be a number.") from exception
+    if checked < 1:
+        raise ValueError(f"{name} cannot be less than 1.")
+    return checked
 
 
 class UI:

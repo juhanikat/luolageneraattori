@@ -3,8 +3,7 @@ import pytest
 from entities.cell import Cell
 from entities.hallway import Hallway
 from entities.map import Map, RoomPlacementError, RoomSizeError
-from entities.room import Room
-from utilities import EMPTY_WEIGHT, PATH_WEIGHT, ROOM_WEIGHT
+from values import EMPTY_WEIGHT, PATH_WEIGHT, ROOM_WEIGHT
 
 
 def test_initial_cells_are_correct():

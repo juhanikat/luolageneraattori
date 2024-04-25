@@ -3,7 +3,6 @@ import random
 from algorithms import Edge, bowyer_watson, kruskal, shortest_path_a_star
 from entities.hallway import Hallway
 from entities.map import Map
-from utilities import convert_rooms_to_x_y_coords
 
 TRIANGULATION_TRIES = 10
 EXTRA_EDGE_CHANCE = 5
@@ -11,6 +10,21 @@ EXTRA_EDGE_CHANCE = 5
 
 class NoTrianglesError(Exception):
     """Raised if bowyer-watson algorithm could not generate the triangulation."""
+
+
+def convert_rooms_to_x_y_coords(rooms: list) -> list:
+    """Takes a list of room objects and converts them to the x, y coordinates of the rooms.
+
+    Args:
+        rooms (list): Rooms to convert.
+
+    Returns:
+        list: A list of (x, y) coordinates.
+    """
+    coords = []
+    for room in rooms:
+        coords.append(room.bottom_left_coords)
+    return coords
 
 
 def generate_dungeon(map: Map, extra_edges=True) -> list:
