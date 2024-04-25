@@ -109,59 +109,18 @@ def bowyer_watson(x_y_coords: list) -> list:
     return valid_triangles
 
 
-def search(edge: Edge, used_vertices: list, next_to: list, result: list) -> list:
-    """Recursive function used by spanning_tree to remove unnecessary edges.
-
-    Returns:
-        list: The edges that are in the spanning tree.
-    """
-    if edge.v0 in used_vertices and edge.v1 in used_vertices:
-        return None
-    result.append(edge)
-    used_vertices.append(edge.v0)
-    used_vertices.append(edge.v1)
-    for next_edge in next_to[edge.id]:
-        search(next_edge, used_vertices, next_to, result)
-    return result
-
-
-def spanning_tree(edges: list) -> list:
-    """Takes a list of edges and creates a non-looping path.
-
-    Args:
-        edges (list): The list of edges.
-
-    Returns:
-        list: The edges that are in the spanning tree.
-    """
-    if not edges:
-        return None
-    next_to = {}
-    edge: Edge
-    edge2: Edge
-    for edge in edges:
-        next_to[edge.id] = []
-        for edge2 in edges:
-            if edge.v0 == edge2.v0 \
-                    or edge.v0 == edge2.v1 \
-                    or edge.v1 == edge2.v0 \
-                    or edge.v1 == edge2.v1:
-                next_to[edge.id].append(edge2)
-    return search(edges[0], [], next_to, [])
-
-
 class UnionFind:
     """Used by kruskal's algorithm.
     Copied from TIRA 2024 course material.
     """
 
-    def __init__(self, nodes):
-        self.link = {node.id: None for node in nodes}
-        self.size = {node.id: 1 for node in nodes}
+    def __init__(self, nodes: list):
+        self.link = {node: None for node in nodes}
+        self.size = {node: 1 for node in nodes}
 
     def find(self, x: Vertex):
-        while self.link[x.id]:
-            x = self.link[x.id]
+        while self.link[x]:
+            x = self.link[x]
         return x
 
     def union(self, a: Vertex, b: Vertex):
@@ -170,10 +129,10 @@ class UnionFind:
         if a == b:
             return
 
-        if self.size[a.id] > self.size[b.id]:
+        if self.size[a] > self.size[b]:
             a, b = b, a
-        self.link[a.id] = b
-        self.size[b.id] += self.size[a.id]
+        self.link[a] = b
+        self.size[b] += self.size[a]
 
 
 def kruskal(nodes: list, edges: list) -> list:
@@ -188,7 +147,6 @@ def kruskal(nodes: list, edges: list) -> list:
     """
     edges.sort(key=lambda x: x.length)
     uf = UnionFind(nodes)
-    edges_count = 0
     tree_weight = 0
     result = []
 
@@ -196,8 +154,9 @@ def kruskal(nodes: list, edges: list) -> list:
     for edge in edges:
         node_a, node_b, weight = edge.v0, edge.v1, edge.length
         if uf.find(node_a) != uf.find(node_b):
+            print(uf.find(node_a), uf.find(node_b))
+            print(edge)
             uf.union(node_a, node_b)
-            edges_count += 1
             tree_weight += weight
             result.append(edge)
 

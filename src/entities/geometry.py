@@ -18,6 +18,9 @@ class Vertex:
     def __eq__(self, other) -> bool:
         return self.x == other.x and self.y == other.y
 
+    def __hash__(self) -> int:
+        return int(self.id)
+
     def __str__(self) -> str:
         return f"Vertex ({self.x}, {self.y})"
 
