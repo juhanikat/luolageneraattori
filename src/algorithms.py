@@ -1,4 +1,4 @@
-"""Various algorithms that are used in generating paths in the dungeon."""
+"""Various algorithms that are used in generating the dungeon."""
 import heapq
 import random
 
@@ -154,8 +154,6 @@ def kruskal(nodes: list, edges: list) -> list:
     for edge in edges:
         node_a, node_b, weight = edge.v0, edge.v1, edge.length
         if uf.find(node_a) != uf.find(node_b):
-            print(uf.find(node_a), uf.find(node_b))
-            print(edge)
             uf.union(node_a, node_b)
             tree_weight += weight
             result.append(edge)

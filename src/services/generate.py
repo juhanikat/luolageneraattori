@@ -3,13 +3,14 @@ import random
 from algorithms import Edge, bowyer_watson, kruskal, shortest_path_a_star
 from entities.hallway import Hallway
 from entities.map import Map
+from entities.room import Room
 
 TRIANGULATION_TRIES = 10
 EXTRA_EDGE_CHANCE = 5
 
 
 class NoTrianglesError(Exception):
-    """Raised if bowyer-watson algorithm could not generate the triangulation."""
+    """Raised if bowyer-watson algorithm can not generate the triangulation."""
 
 
 def convert_rooms_to_x_y_coords(rooms: list) -> list:
@@ -22,6 +23,7 @@ def convert_rooms_to_x_y_coords(rooms: list) -> list:
         list: A list of (x, y) coordinates.
     """
     coords = []
+    room: Room
     for room in rooms:
         coords.append(room.bottom_left_coords)
     return coords
@@ -34,8 +36,8 @@ def generate_dungeon(map: Map, extra_edges=True) -> list:
     2. Creating a minimum spanning tree from the triangulation, removing unnecessary edges.
     3. Randomly adding some removed edges back into the graph, 
     to make the resulting hallways look more natural.
-    4. Converting the edges into hallways.
-    5. Adding these hallways to the map.
+    4. Converting the edges into Hallways.
+    5. Adding these Hallways to the map.
 
     Args:
         map (Map): A Map object containing the rooms.
@@ -77,10 +79,11 @@ def generate_dungeon(map: Map, extra_edges=True) -> list:
                 # chance to add removed edge back into the result
                 result.append(edge)
 
-    hallway: Hallway
-    edge: Edge
     random.shuffle(result)
     added_hallways = []
+
+    hallway: Hallway
+    edge: Edge
     for edge in result:
         hallway = Hallway(shortest_path_a_star(map,
                                                map.cells[(

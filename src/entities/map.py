@@ -44,13 +44,13 @@ def convert_rooms_to_vertices(rooms: list) -> list:
 
 
 class Map:
-    """A class that holds all placed rooms and hallways.
+    """Holds all placed rooms and hallways.
     """
 
     def __init__(self, size_x: int, size_y: int, amount: int,
                  room_min_size: int = -1, room_max_size: int = -1,
                  room_exact_size: int = -1) -> None:
-        """_summary_
+        """Holds all placed rooms and hallways.
 
         Args:
             size_x (int): Width of the map.
@@ -190,13 +190,14 @@ class Map:
             room (Room): The room to be placed.
 
         Returns:
-            Room | bool: Returns the placed room if there was room for it, otherwise returns False.
+            Room | bool: Returns the placed room if there was room for it, otherwise False.
         """
         x_coord = random.randint(0, self.size_x - room.size_x)
         y_coord = random.randint(0, self.size_y - room.size_y)
         room.bottom_left_coords = (x_coord, y_coord)
 
         for coord in room.get_all_coords():
+            placed_room: Room
             for placed_room in self.placed_rooms:
                 if placed_room.covers(coord):  # if rooms overlap
                     return False
@@ -206,6 +207,16 @@ class Map:
             self.cells[coord] = Cell(coord[0], coord[1], ROOM_WEIGHT)
 
         return room
+
+    def add_hallway(self, hallway: Hallway):
+        """Adds a hallway to the map.
+
+        Args:
+            hallway (Hallway): The hallway that will be added.
+        """
+        self.added_hallways.append(hallway)
+        for coord in hallway.coords:
+            self.cells[coord] = Cell(coord[0], coord[1], PATH_WEIGHT)
 
     def place_rooms(self) -> None:
         """Places rooms on the map.
@@ -252,13 +263,3 @@ class Map:
                             index = 0
                             continue
                     break
-
-    def add_hallway(self, hallway: Hallway):
-        """Adds a hallway to the map.
-
-        Args:
-            hallway (Hallway): The hallway that will be added.
-        """
-        self.added_hallways.append(hallway)
-        for coord in hallway.coords:
-            self.cells[coord] = Cell(coord[0], coord[1], PATH_WEIGHT)

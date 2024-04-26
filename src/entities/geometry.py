@@ -1,4 +1,4 @@
-"""The classes in this module are used by algorithms in algorithms.py."""
+"""Shapes used by algorithms in algorithms.py."""
 import math
 import uuid
 
@@ -10,7 +10,13 @@ class BadTriangleError(Exception):
 class Vertex:
     """Represents a node in the network."""
 
-    def __init__(self, x, y) -> None:
+    def __init__(self, x: int, y: int) -> None:
+        """Represents a node in the network.
+
+        Args:
+            x (int): x-coordinate of the vertex.
+            y (int): y-coordinate of the vertex.
+        """
         self.x = x
         self.y = y
         self.id = uuid.uuid4()
@@ -44,11 +50,11 @@ class Edge:
             v0 (Vertex): First vertex.
             v1 (Vertex): Second vertex.
         """
-        self.id = uuid.uuid4()
         self.v0 = v0
         self.v1 = v1
         self.length = math.sqrt(
             ((self.v0.x - self.v1.x)**2 + (self.v0.y - self.v1.y)**2))
+        self.id = uuid.uuid4()
 
     def __eq__(self, other) -> bool:
         return (self.v0 == other.v0 and self.v1 == other.v1) or \
@@ -59,11 +65,11 @@ class Edge:
 
 
 class Triangle:
-    """A triangle connecting three rooms together.
+    """A triangle connecting three vertices together.
     """
 
     def __init__(self, v0: Vertex, v1: Vertex, v2: Vertex) -> None:
-        """A triangle between 3 vertices.
+        """A triangle connecting three vertices together.
 
         Args:
             v0 (Vertex): First vertex.
@@ -89,7 +95,6 @@ class Triangle:
 
         self.circumcircle_radius = self.calculate_circumcircle_radius(
             self.edge0, self.edge1, self.edge2)
-
         self.circumcenter = self.calculate_circumcenter(v0, v1, v2)
 
     def calculate_circumcircle_radius(self, edge0: Edge, edge1: Edge, edge2: Edge) -> float:

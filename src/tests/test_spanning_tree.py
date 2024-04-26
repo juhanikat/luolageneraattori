@@ -1,6 +1,6 @@
 import pytest
 
-from algorithms import kruskal
+from algorithms import bowyer_watson, kruskal
 from entities.geometry import Edge, Vertex
 
 

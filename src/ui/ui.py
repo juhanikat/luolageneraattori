@@ -40,8 +40,8 @@ def validate_int(name: str, checked: str) -> int:
 class UI:
 
     def __init__(self) -> None:
-        self.map = None
         self.root = tk.Tk()
+        self.map = None
         self.error_message = None
         self.run_button_text = tk.StringVar()
         self.create_ui()
@@ -78,9 +78,11 @@ class UI:
             if map_size_x * map_size_y > MAX_MAP_SIZE_X * MAX_MAP_SIZE_Y:
                 raise ValueError(
                     f"Map size cannot be larger than {MAX_MAP_SIZE_X}x{MAX_MAP_SIZE_Y}.")
+
             self.change_error_text("")
             self.change_run_button_text("Loading...")
             self.root.update_idletasks()
+
             self.map = Map(map_size_x, map_size_y, amount, room_min_size=room_min_size,
                            room_max_size=room_max_size)
             edges = generate_dungeon(self.map)
@@ -142,7 +144,6 @@ class UI:
         map_size_x_entry.pack()
         map_size_y_label.pack()
         map_size_y_entry.pack()
-
         self.run_button.pack()
 
     def start(self):
@@ -150,6 +151,11 @@ class UI:
 
 
 def display_map(map: Map):
+    """Displays a matplotlib graph showing the result of the program.
+
+    Args:
+        map (Map): A Map object containing all the rooms and hallways.
+    """
     pyplot.style.use("Solarize_Light2")
     map_width = map.get_size()[0]
     map_height = map.get_size()[1]
