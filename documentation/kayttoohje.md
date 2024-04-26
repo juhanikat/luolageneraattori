@@ -5,4 +5,4 @@
 3. Mene projektin hakemistoon
 4. Asenna riipppuvuudet komennolla `poetry install`
 5. Käynnistä ohjelma komennolla `poetry run invoke start`
-6. Käyttöliittymä tulee näkyviin. Anna tekstikenttiin haluamasi arvot ja paina "Run" nappia.
+6. Käyttöliittymä tulee näkyviin. Anna tekstikenttiin haluamasi arvot ja paina "Run" nappia. Jos syöte on virheellinen, ohjelma kertoo siitä punaisella virheviestillä.

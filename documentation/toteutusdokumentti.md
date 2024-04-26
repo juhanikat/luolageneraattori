@@ -10,15 +10,16 @@ Lopuksi ohjelma näyttää luodun kartan käyttäjälle matplotlib-kirjaston tek
 ## Aikavaativuudet
 
 - Bowyer-Watsonin algoritmin aikavaativuus on O(n^2)
-- Kruskalin algoritmin aikavaativuus on O(n^2)
+- Kruskalin algoritmin aikavaativuus on O(E log E), jossa E on kaarien määrä.
 - A\* algoritmin aikavaativuus on O(b^d), jossa b on keskimääräinen polkujen määrä yhdestä solmusta (tämän ohjelman tapauksessa 4) ja d on lyhimmän polun pituus.
 
 ## Puutteet
 
-- Generoidut käytävät ovat usein täydellisen suoria, joka ei välttämättä vastaa mielikuvaa luolastosta.
+- Generoidut käytävät ovat välillä täydellisen suoria, joka ei välttämättä vastaa mielikuvaa luolastosta.
 - Ohjelman käyttämä reitinhakualgoritmi on liian hidas suurilla kartoilla. Esimerkiksi 1000x1000 kokoisen kartan generoiminen kestää käytännössä ikuisesti.
 - Jos kartan koko on liian pieni, ohjelma voi epäonnistua asettamaan huoneet kartalle jolloin se ilmoittaa tästä virheviestillä käyttäjälle. Tämä johtuu siitä että ohjelma kokeilee asettaa huoneita eri puolille karttaa satunnaisesti, ja lopettaa yrittämisen tietyn epäonnistumisten määrän jälkeen. Tämä on ärsyttävää käyttäjälle, eikä ole selvää kuinka suuri kartta käyttäjän täytyy luoda että huoneet mahtuvat kartalle.
+- Ohjelmalla menee joskus kauan asettaa huoneita kartalle edellisen kohdan toiminnan takia, esimerkiksi jos kartta on liian pieni.
 
 ## Apuvälineet
 
-Projektissa olevan Kruskalin algoritmin ja Dijkstran algoritmin tekemiseen on käytetty TIRA 2024 kevät-kurssin materiaaleja. Projektissa ei ole käytetty ChatGPT:tä tai muita laajoja kielimalleja.
+Projektissa olevan Kruskalin algoritmin, UnionFind-luokan ja reitinhakualgoritmin tekemiseen on käytetty TIRA 2024 kevät-kurssin materiaaleja. Projektissa ei ole käytetty ChatGPT:tä tai muita laajoja kielimalleja.

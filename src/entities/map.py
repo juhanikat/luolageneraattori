@@ -8,7 +8,7 @@ from values import DEFAULT_ARGS, EMPTY_WEIGHT, PATH_WEIGHT, ROOM_WEIGHT
 from .room import Room
 
 ROOM_PLACEMENT_TRIES = 700
-ROOM_PLACEMENT_STRIKES = 50
+ROOM_PLACEMENT_STRIKES = 10
 
 
 class RoomSizeError(Exception):

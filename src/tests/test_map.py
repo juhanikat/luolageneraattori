@@ -68,7 +68,7 @@ def test_max_room_size_cannot_be_less_than_min_room_size():
     with pytest.raises(RoomSizeError):
         Map(100, 100, 3, room_min_size=5, room_max_size=4).place_rooms()
     with pytest.raises(RoomSizeError):
-        Map(100, 100, 3, room_min_size=200000, room_max_size=1).place_rooms()
+        Map(100, 100, 3, room_min_size=2, room_max_size=1).place_rooms()
 
 
 def test_3_rooms_with_same_size_as_map_cannot_be_placed():
