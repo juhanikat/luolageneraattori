@@ -8,5 +8,5 @@ Satunnaisia luolia generoiva ohjelma. Tehty Algoritmit ja tekoäly -kurssia vart
 2. Lataa ohjelma, tai kloonaa se komennolla `git clone git@github.com:juhanikat/luolageneraattori.git`
 3. Mene projektin hakemistoon
 4. Asenna riipppuvuudet komennolla `poetry install`
-5. Käynnistä ohjelma komennolla `poetry run invoke start`
+5. Käynnistä ohjelma komennolla `poetry run invoke start`. Jos komento ei toimi, kokeile komentoa `poetry run python src/index.py`.
 6. Käyttöliittymä tulee näkyviin. Anna tekstikenttiin haluamasi arvot ja paina "Run" nappia. Jos syöte on virheellinen, ohjelma kertoo siitä punaisella virheviestillä.
